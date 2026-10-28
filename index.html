@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Yaman Elektrik">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Yaman Elektrik</title>
 <style>
 :root{--bg:#f4f5f7;--card:#fff;--tx:#0f172a;--mut:#64748b;--bd:#e2e8f0;--ac:#f59e0b;--acd:#d97706;--ink:#0f172a;--ok:#16a34a;--err:#dc2626;--sh:0 1px 2px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.05);--r:14px}
@@ -128,6 +136,10 @@ header{background:var(--ink);color:#fff;position:sticky;top:0;z-index:20;box-sha
 .tag{cursor:pointer;padding:4px 10px}
 .tag:hover{background:var(--ac);color:#111}
 .fld input.bad{border-color:var(--err)}
+#lb{z-index:60}
+#lb .adm2{display:inline-block;margin-top:10px;font-size:14px;color:#86efac;background:rgba(22,163,74,.2);border:1px solid rgba(34,197,94,.4);border-radius:10px;padding:6px 12px}
+#lb .adm2:empty{display:none}
+.ci .im.z{cursor:zoom-in}
 /* floating cart bar */
 .fbar{position:fixed;left:0;right:0;bottom:0;z-index:18;padding:10px 14px calc(10px + env(safe-area-inset-bottom));pointer-events:none;transform:translateY(120%);transition:.25s}
 .fbar.show{transform:none}
@@ -186,6 +198,7 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
     <div><b>Yaman Elektrik</b><small>Elektrik malzemeleri</small></div>
   </div>
   <div class="acts">
+    <button class="hb" id="inst" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg><span class="t">Yükle</span></button>
     <button class="hb" id="lock"><svg viewBox="0 0 24 24" id="lockic"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="t" id="lockt">Giriş</span></button>
     <button class="hb" id="cartb"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg><span class="t">Sepet</span><span class="badge" id="badge" style="display:none">0</span></button>
   </div>
@@ -222,7 +235,7 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 </div></div>
 
 <div class="ov" id="lb"><button class="x" aria-label="Kapat"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-  <div class="lbw"><img id="lbi" alt=""><div class="cap"><b id="lbn"></b><span id="lbp"></span></div></div></div>
+  <div class="lbw"><img id="lbi" alt=""><div class="cap"><b id="lbn"></b><span id="lbp"></span><br><div class="adm2" id="lba"></div></div></div></div>
 
 <div class="ov" id="eov"><div class="modal tall">
   <h3 id="etitle">Yeni ürün</h3><p>Kaydedince CSV güncellenir, fiyat dosyaları yeniden oluşur.</p>
@@ -280,6 +293,7 @@ function closeOv(id){ const o=$(id); o.classList.remove('in'); setTimeout(()=>o.
 
 async function init(){
   try { const r = await fetch('api.php?ping&t=' + Date.now()); const j = r.ok ? await r.json() : null; LOCAL = !!(j && j.php === true); } catch(e){ LOCAL = false; }
+  if(!LOCAL && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});   // PWA (yerel php modunda kapalı)
   try { P = await (await fetch('products.json?' + Date.now())).json(); } catch(e){ P = []; }
   drawChips(); drawSort(); render(); sum();
 }
@@ -323,7 +337,9 @@ function pickCat(k){
 }
 function zoom(id){
   const p = P[id]; if(!p || !p.resim) return;
-  $('lbi').src = p.resim; $('lbn').textContent = p.ad; $('lbp').textContent = TL(p.satis);
+  $('lbi').src = p.resim; $('lbn').textContent = p.ad; $('lbp').textContent = TL(p.satis) + ' / ' + unit(p);
+  const c = costs ? costs[id] : null;   // alış fiyatı sadece yönetici girişinde
+  $('lba').textContent = c === null ? '' : `Alış: ${TL(c)} · Kâr: ${TL(p.satis - c)}` + (c ? ` (%${Math.round((p.satis - c) / c * 100)})` : '');
   openOv('lb');
 }
 $('lb').onclick = () => closeOv('lb');
@@ -340,7 +356,7 @@ function sum(){
 }
 function drawCart(){
   const E = Object.entries(cart).filter(([id])=>P[id]);
-  $('cb').innerHTML = E.length ? E.map(([id,n])=>`<div class="ci"><div class="im">${img(P[id])}</div>
+  $('cb').innerHTML = E.length ? E.map(([id,n])=>`<div class="ci"><div class="im${P[id].resim?' z':''}" ${P[id].resim?`onclick="zoom(${id})"`:''}>${img(P[id])}</div>
     <div class="in"><b>${esc(P[id].ad)}</b><small>${TL(P[id].satis)} / ${unit(P[id])} · ${TL(P[id].satis*n)}</small></div>
     ${qctl(P[id],n,'q')}</div>`).join('')
     : `<div class="empty" style="padding:50px 0">${BOX}<div>Sepetin boş</div></div>`;
@@ -404,7 +420,7 @@ $('lov').onclick = e => { if(e.target.id==='lov') closeOv('lov'); };
 const openCart = () => { drawCart(); openOv('cov'); };
 $('cartb').onclick = openCart; $('fopen').onclick = openCart; $('cx').onclick = () => closeOv('cov');
 $('cov').onclick = e => { if(e.target.id==='cov') closeOv('cov'); };
-document.onkeydown = e => { if(e.key==='Escape'){ closeOv('lov'); closeOv('cov'); closeOv('eov'); closeOv('lb'); $('dd').classList.remove('open'); } };
+document.onkeydown = e => { if(e.key==='Escape'){ if($('lb').classList.contains('show')){ closeOv('lb'); return; } closeOv('lov'); closeOv('cov'); closeOv('eov'); $('dd').classList.remove('open'); } };
 
 /* ürün ekle / düzenle / sil (sadece php -S ile yerelde) */
 let editId = null, delArm = false;
@@ -459,6 +475,12 @@ $('edel').onclick = () => {
 };
 $('ec').onclick = () => closeOv('eov');
 $('eov').onclick = e => { if(e.target.id === 'eov') closeOv('eov'); };
+
+/* uygulamayı yükle (Android/Chrome) */
+let DP = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); DP = e; $('inst').style.display = ''; });
+addEventListener('appinstalled', () => { DP = null; $('inst').style.display = 'none'; toast('Uygulama yüklendi'); });
+$('inst').onclick = async () => { if(!DP) return; DP.prompt(); await DP.userChoice; DP = null; $('inst').style.display = 'none'; };
 
 /* yukarı çık */
 addEventListener('scroll', () => $('top').classList.toggle('show', scrollY > 500), {passive:true});
