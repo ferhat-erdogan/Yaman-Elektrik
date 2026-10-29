@@ -428,7 +428,7 @@ $('shar').onclick = () => {
 };
 $('loc').onclick = () => window.open('https://maps.google.com/?q=' + encodeURIComponent(LOC_QUERY), '_blank');
 
-/* ===== ÜRÜN GÖRSELİ OLUŞTURMA (premium) ===== */
+/* ===== ÜRÜN GÖRSELİ OLUŞTURMA (premium, kırpmasız) ===== */
 function loadImage(src){
   return new Promise(res => {
     if(!src) return res(null);
@@ -438,13 +438,20 @@ function loadImage(src){
     im.src = src;
   });
 }
-function drawImageCover(ctx, im, x, y, w, h){
+function drawImageContainBlur(ctx, im, x, y, w, h){
   const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
-  const sc = Math.max(w/iw, h/ih);
-  const dw = iw*sc, dh = ih*sc;
-  ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
-  ctx.drawImage(im, x + (w-dw)/2, y + (h-dh)/2, dw, dh);
+  // 1) Blur'lu arka plan (cover — taşan kısım kesilir, blur'da görünmez)
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.filter = 'blur(28px) brightness(0.55)';
+  const scB = Math.max(w/iw, h/ih);
+  const dwB = iw*scB, dhB = ih*scB;
+  ctx.drawImage(im, x + (w-dwB)/2, y + (h-dhB)/2, dwB, dhB);
   ctx.restore();
+  // 2) Net görsel — tamamı görünür (contain), kırpma YOK
+  const scC = Math.min(w/iw, h/ih);
+  const dwC = iw*scC, dhC = ih*scC;
+  ctx.drawImage(im, x + (w-dwC)/2, y + (h-dhC)/2, dwC, dhC);
 }
 function wrapText(ctx, text, x, y, maxW, lineH){
   const words = String(text).split(' ');
@@ -496,7 +503,7 @@ async function shareProduct(id){
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    // 1) Arka plan: derin lacivert gradient
+    // 1) Arka plan
     const bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0,    '#0a0e1a');
     bg.addColorStop(0.55, '#0f172a');
@@ -517,6 +524,7 @@ async function shareProduct(id){
     const IMG_Y = PAD + 20;
     const R = 28;
 
+    // Kart gölgesi + arka plan (blur arka plan da buraya çizilecek)
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.55)';
     ctx.shadowBlur = 50;
@@ -526,15 +534,17 @@ async function shareProduct(id){
     ctx.fill();
     ctx.restore();
 
+    // Fotoğrafı kırpmadan çiz (blur arka plan + net contain görsel)
     const im = await loadImage(p.resim);
     if(im){
       ctx.save();
       roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
       ctx.clip();
-      drawImageCover(ctx, im, PAD, IMG_Y, IMG_W, IMG_H);
+      drawImageContainBlur(ctx, im, PAD, IMG_Y, IMG_W, IMG_H);
       ctx.restore();
     }
 
+    // İnce altın çerçeve
     roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
     ctx.strokeStyle = 'rgba(245,158,11,0.55)';
     ctx.lineWidth = 2.5;
@@ -550,7 +560,7 @@ async function shareProduct(id){
     const ny = IMG_Y + IMG_H + 75;
     const nameEnd = wrapText(ctx, p.ad, TX, ny, TW, 54);
 
-    // 4) Fiyat — altın gradient
+    // 4) Fiyat
     const py = nameEnd + 75;
     const priceGrad = ctx.createLinearGradient(TX, py, TX + 700, py + 80);
     priceGrad.addColorStop(0,   '#fbbf24');
