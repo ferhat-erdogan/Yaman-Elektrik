@@ -237,6 +237,15 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
   .ci .ctrl .q .qi{width:52px;font-size:13px}
 }
 
+/* Mevcut resim önizleme */
+.prev-box{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px}
+.prev-box img{width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#fff;flex:none}
+.prev-box .prev-info{min-width:0;flex:1}
+.prev-box .prev-info small{display:block;color:var(--mut);font-size:11.5px;line-height:1.3;word-break:break-all;margin:0}
+.prev-box .prev-info b{display:block;color:var(--tx);font-size:12.5px;margin-bottom:2px}
+.prev-box.empty{background:transparent;border-style:dashed}
+.prev-box.empty .prev-info small{font-style:italic}
+
 #toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
@@ -297,10 +306,10 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
     <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal"></div>
   </div>
   <div class="fld">
-    <label for="f_resim">Resim</label>
-    <input id="f_resim" placeholder="https://… (veya aşağıdan dosya seç)">
+    <label>Ürün resmi</label>
+    <div class="prev-box empty" id="f_resim_prev"></div>
     <input id="f_resim_file" type="file" accept="image/*">
-    <small>Dosya seçersen 800px webp'e dönüştürülüp GitHub'a yüklenir</small>
+    <small>Dosya seç → 800px webp'e dönüştürülüp GitHub'a <b>img/&lt;kategori&gt;/&lt;ad&gt;.webp</b> olarak yüklenir</small>
   </div>
   <div class="fld"><label for="f_kat">Kategori (zorunlu)</label><input id="f_kat" placeholder="Seç veya yeni yaz" autocomplete="off"><div class="kch" id="kch"></div></div>
   <div class="err" id="eerr"></div>
@@ -314,7 +323,7 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 <div id="toast"></div>
 
 <script>
-/* ==== GitHub Ayarları (kendine göre doldur) ==== */
+/* ==== GitHub Ayarları ==== */
 const GITHUB_OWNER = 'ferhat-erdogan';
 const GITHUB_REPO  = 'Yaman-Elektrik';
 const GITHUB_BRANCH = 'main';
@@ -324,7 +333,7 @@ const ADMIN_PW_KEY = 'yaman_admin_pw';
 const GH_TOKEN_KEY = 'yaman_gh_token';
 const COSTS_CACHE_KEY = 'yaman_costs';
 const SHARE_NAME = '*Yaman Elektrik*\n\n*Ferhat Erdoğan*  05346381542\n\n*Murat Erdoğan*  05347151345';
-const LOC_QUERY = 'Çarşamba Mahallesi 1818 Sokak No:45/C Şehzadeler Manisa';
+const LOC_QUERY = 'Çarşı Mahallesi 1818 Sokak No:45/C Şehzadeler Manisa';
 const TL = n => n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺';
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -342,7 +351,6 @@ const r2 = x => Math.round(x * 100) / 100;
 const fmtQ = n => n.toLocaleString('tr-TR', {maximumFractionDigits: 2});
 const isSel = id => cartSel[id] !== false;
 
-/* ==== Slug (Türkçe karakter → ASCII) ==== */
 function slug(s){
   s = String(s || '')
     .replace(/İ/g,'i').replace(/I/g,'i').replace(/ı/g,'i')
@@ -357,7 +365,6 @@ function slug(s){
   return (s.substring(0,60) || 'urun');
 }
 
-/* ==== Base64 yardımcıları (UTF-8 safe) ==== */
 function utf8ToB64(str){
   const bytes = new TextEncoder().encode(str);
   let bin = '';
@@ -382,10 +389,7 @@ async function ghGet(path){
   if(!ghToken) throw new Error('GitHub token yok');
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${GITHUB_BRANCH}&t=${Date.now()}`;
   const r = await fetch(url, {
-    headers: {
-      Authorization: 'Bearer ' + ghToken,
-      Accept: 'application/vnd.github+json'
-    }
+    headers: { Authorization: 'Bearer ' + ghToken, Accept: 'application/vnd.github+json' }
   });
   if(r.status === 404) return { content: null, sha: null };
   if(!r.ok){
@@ -403,11 +407,7 @@ async function ghPutBinary(path, b64content, sha, message){
   if(sha) body.sha = sha;
   const r = await fetch(url, {
     method: 'PUT',
-    headers: {
-      Authorization: 'Bearer ' + ghToken,
-      Accept: 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
+    headers: { Authorization: 'Bearer ' + ghToken, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if(!r.ok){
@@ -420,7 +420,7 @@ async function ghPutText(path, text, sha, message){
   return ghPutBinary(path, utf8ToB64(text), sha, message);
 }
 
-/* ==== Şifreleme (costs.json) ==== */
+/* ==== costs.json şifreleme ==== */
 async function encryptCosts(arr, pw){
   if(!(window.crypto && crypto.subtle)){
     throw new Error('Ürün kaydetmek için 127.0.0.1 veya HTTPS adresi gerekli (crypto.subtle yok)');
@@ -452,7 +452,7 @@ async function unlock(pw){
   return JSON.parse(new TextDecoder().decode(d));
 }
 
-/* ==== Resim işleme ==== */
+/* ==== Resim işleme — sadece yerel dosya ==== */
 function resizeToCanvas(im, maxSide){
   const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
   const sc = Math.min(1, maxSide / Math.max(w, h));
@@ -474,15 +474,6 @@ function processImageFromFile(file){
     im.src = url;
   });
 }
-function processImageFromUrl(url){
-  return new Promise((res, rej) => {
-    const im = new Image();
-    im.crossOrigin = 'anonymous';
-    im.onload = () => res(resizeToCanvas(im, 800));
-    im.onerror = () => rej(new Error('Resim indirilemedi (CORS engeli olabilir — dosya seçmeyi dene)'));
-    im.src = url;
-  });
-}
 async function uploadImageToGitHub(canvas, path){
   const blob = await new Promise(r => canvas.toBlob(r, 'image/webp', 0.82));
   if(!blob) throw new Error('WebP oluşturulamadı');
@@ -501,16 +492,12 @@ async function saveProduct(item, imageCanvas){
   if(!(item.satis > 0)) throw new Error('Perakende fiyatı gerekli');
   if(!item.kat.trim()) throw new Error('Kategori zorunlu');
 
-  let resimYolu = item.resim || '';
+  let resimYolu = item.resim || '';   // mevcut (düzenlemede)
 
+  // Yeni dosya seçildiyse: yükle + yolu güncelle
   if(imageCanvas){
     const path = `img/${slug(item.kat)}/${slug(item.ad)}.webp`;
     await uploadImageToGitHub(imageCanvas, path);
-    resimYolu = path;
-  } else if(/^https?:\/\//i.test(item.resim)){
-    const c = await processImageFromUrl(item.resim);
-    const path = `img/${slug(item.kat)}/${slug(item.ad)}.webp`;
-    await uploadImageToGitHub(c, path);
     resimYolu = path;
   }
 
@@ -524,11 +511,9 @@ async function saveProduct(item, imageCanvas){
     costs[oldId] = item.alis;
   }
 
-  // products.json
   const gp = await ghGet('products.json');
   await ghPutText('products.json', JSON.stringify(P), gp.sha, 'urunler: ' + item.ad);
 
-  // costs.json
   const enc = await encryptCosts(costs, PW);
   const gc = await ghGet('costs.json');
   await ghPutText('costs.json', JSON.stringify(enc), gc.sha, 'costs guncellendi');
@@ -552,7 +537,7 @@ async function deleteProduct(id){
   try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
 }
 
-/* ==== Sepet miktar kontrol ==== */
+/* ==== Sepet kontrol ==== */
 function qctl(p, n, c){
   const mid = isMt(p)
     ? `<input class="qi" inputmode="decimal" value="${fmtQ(n)}" onfocus="this.select()" oninput="setQtyLive(${p.id},this.value)" onchange="setQty(${p.id},this.value)"><em class="mu">mt</em>`
@@ -763,7 +748,7 @@ $('shar').onclick = () => {
 };
 $('loc').onclick = () => window.open('https://maps.google.com/?q=' + encodeURIComponent(LOC_QUERY), '_blank');
 
-/* ==== Ürün paylaş görseli (canvas) ==== */
+/* ==== Ürün paylaş görseli ==== */
 function loadImage(src){
   return new Promise(res => {
     if(!src) return res(null);
@@ -950,8 +935,19 @@ function edit(id){
   $('f_ad').value = p.ad || '';
   $('f_alis').value = (id === null) ? '' : (costs ? costs[id] : '');
   $('f_satis').value = p.satis || '';
-  $('f_resim').value = (/^https?:/i.test(p.resim || '')) ? p.resim : '';
   $('f_resim_file').value = '';
+
+  // Mevcut resmi önizlemede göster
+  const prev = $('f_resim_prev');
+  if(p.resim){
+    prev.classList.remove('empty');
+    prev.innerHTML = `<img src="${esc(p.resim)}" alt="" onerror="this.style.display='none'">
+      <div class="prev-info"><b>Mevcut resim</b><small>${esc(p.resim)}</small></div>`;
+  } else {
+    prev.classList.add('empty');
+    prev.innerHTML = `<div class="prev-info"><small>Henüz resim yok — aşağıdan seç</small></div>`;
+  }
+
   $('f_kat').value = p.kat || '';
   $('edel').style.display = (id === null) ? 'none' : '';
   $('edel').textContent = 'Sil';
@@ -978,7 +974,7 @@ $('esave').onclick = async () => {
     ad: $('f_ad').value.trim(),
     alis: parseFloat(String($('f_alis').value).replace(',', '.')) || 0,
     satis: parseFloat(String($('f_satis').value).replace(',', '.')) || 0,
-    resim: $('f_resim').value.trim(),
+    resim: (editId !== null && P[editId]) ? (P[editId].resim || '') : '',   // mevcut resmi koru
     kat: $('f_kat').value.trim()
   };
   if(!item.ad){ $('eerr').textContent = 'Ürün adı gerekli.'; return; }
