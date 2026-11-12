@@ -2,9 +2,12 @@
 // - Sayfa, JSON, CSS ve scriptler: önce ağ (fiyatlar hep güncel), internet yoksa önbellek
 // - Ürün resimleri (img/): önbellekten hemen göster, arkada güncelle
 // - api.php ve POST istekleri: karışmaz
-const V = 'yaman-v3', IMG = 'yaman-img-v1', MAX_IMG = 400;
+const V = 'yaman-v4', IMG = 'yaman-img-v1', MAX_IMG = 400;
 const SCOPE = self.registration.scope;
-const SHELL = ['./', 'index.html', 'css/style.css', 'crypto-fallback.js', 'manifest.webmanifest',
+const SHELL = ['./', 'index.html', 'css/style.css',
+  'js/app-config.js', 'js/app-state.js', 'js/app-github.js',
+  'js/app-render.js', 'js/app-admin.js', 'js/app-share.js', 'js/app-ui.js',
+  'crypto-fallback.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'products.json', 'costs.json']
   .map(u => new URL(u, SCOPE).href);
 
