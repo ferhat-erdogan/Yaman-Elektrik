@@ -237,7 +237,6 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
   .ci .ctrl .q .qi{width:52px;font-size:13px}
 }
 
-/* Mevcut resim önizleme */
 .prev-box{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px}
 .prev-box img{width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#fff;flex:none}
 .prev-box .prev-info{min-width:0;flex:1}
@@ -419,6 +418,24 @@ async function ghPutBinary(path, b64content, sha, message){
 async function ghPutText(path, text, sha, message){
   return ghPutBinary(path, utf8ToB64(text), sha, message);
 }
+async function ghDelete(path, sha, message){
+  if(!ghToken) throw new Error('GitHub token yok');
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`;
+  const r = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + ghToken,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: message || ('sil: ' + path), sha, branch: GITHUB_BRANCH })
+  });
+  if(!r.ok){
+    const t = await r.text().catch(() => '');
+    throw new Error('GitHub silme hatası: ' + r.status + (t ? ' — ' + t.slice(0,100) : ''));
+  }
+  return await r.json();
+}
 
 /* ==== costs.json şifreleme ==== */
 async function encryptCosts(arr, pw){
@@ -452,7 +469,7 @@ async function unlock(pw){
   return JSON.parse(new TextDecoder().decode(d));
 }
 
-/* ==== Resim işleme — sadece yerel dosya ==== */
+/* ==== Resim işleme ==== */
 function resizeToCanvas(im, maxSide){
   const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
   const sc = Math.min(1, maxSide / Math.max(w, h));
@@ -492,9 +509,8 @@ async function saveProduct(item, imageCanvas){
   if(!(item.satis > 0)) throw new Error('Perakende fiyatı gerekli');
   if(!item.kat.trim()) throw new Error('Kategori zorunlu');
 
-  let resimYolu = item.resim || '';   // mevcut (düzenlemede)
+  let resimYolu = item.resim || '';
 
-  // Yeni dosya seçildiyse: yükle + yolu güncelle
   if(imageCanvas){
     const path = `img/${slug(item.kat)}/${slug(item.ad)}.webp`;
     await uploadImageToGitHub(imageCanvas, path);
@@ -523,21 +539,42 @@ async function saveProduct(item, imageCanvas){
 async function deleteProduct(id){
   if(!ghToken) throw new Error('GitHub token gerekli');
   id = Number(id);
+
+  // Silinecek ürünün resim yolunu hatırla (splice'tan önce)
+  const silinenResim = (P[id] && P[id].resim) || '';
+
   P.splice(id, 1);
   costs.splice(id, 1);
   P = P.map((p, i) => ({ ...p, id: i }));
 
+  // products.json
   const gp = await ghGet('products.json');
   await ghPutText('products.json', JSON.stringify(P), gp.sha, 'urun silindi');
 
+  // costs.json
   const enc = await encryptCosts(costs, PW);
   const gc = await ghGet('costs.json');
   await ghPutText('costs.json', JSON.stringify(enc), gc.sha, 'costs guncellendi');
 
+  // ==== Resim temizliği ====
+  if(silinenResim.startsWith('img/')){
+    const halaKullanan = P.some(p => p.resim === silinenResim);
+    if(!halaKullanan){
+      try {
+        const fr = await ghGet(silinenResim);
+        if(fr.sha){
+          await ghDelete(silinenResim, fr.sha, 'resim silindi: ' + silinenResim);
+        }
+      } catch(_){
+        // 404 vs. — kayıt akışını bozma
+      }
+    }
+  }
+
   try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
 }
 
-/* ==== Sepet kontrol ==== */
+/* ==== Sepet ==== */
 function qctl(p, n, c){
   const mid = isMt(p)
     ? `<input class="qi" inputmode="decimal" value="${fmtQ(n)}" onfocus="this.select()" oninput="setQtyLive(${p.id},this.value)" onchange="setQty(${p.id},this.value)"><em class="mu">mt</em>`
@@ -937,7 +974,6 @@ function edit(id){
   $('f_satis').value = p.satis || '';
   $('f_resim_file').value = '';
 
-  // Mevcut resmi önizlemede göster
   const prev = $('f_resim_prev');
   if(p.resim){
     prev.classList.remove('empty');
@@ -974,7 +1010,7 @@ $('esave').onclick = async () => {
     ad: $('f_ad').value.trim(),
     alis: parseFloat(String($('f_alis').value).replace(',', '.')) || 0,
     satis: parseFloat(String($('f_satis').value).replace(',', '.')) || 0,
-    resim: (editId !== null && P[editId]) ? (P[editId].resim || '') : '',   // mevcut resmi koru
+    resim: (editId !== null && P[editId]) ? (P[editId].resim || '') : '',
     kat: $('f_kat').value.trim()
   };
   if(!item.ad){ $('eerr').textContent = 'Ürün adı gerekli.'; return; }
