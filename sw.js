@@ -1,7 +1,6 @@
 // Yaman Elektrik service worker
 // - Sayfa, JSON ve scriptler: önce ağ (fiyatlar hep güncel), internet yoksa önbellek
 // - Ürün resimleri (img/): önbellekten hemen göster, arkada güncelle
-// - api.php ve POST istekleri: karışmaz
 const V = 'yaman-v1', IMG = 'yaman-img-v1', MAX_IMG = 400;
 const SCOPE = self.registration.scope;
 const SHELL = ['./', 'index.html', 'crypto-fallback.js', 'manifest.webmanifest',
@@ -63,7 +62,7 @@ self.addEventListener('fetch', e => {
   const r = e.request;
   if (r.method !== 'GET') return;
   const u = new URL(r.url);
-  if (u.origin !== location.origin || u.pathname.endsWith('/api.php')) return;
+if (u.origin !== location.origin) return;
   if (u.pathname.includes('/img/')) { e.respondWith(imageSWR(e)); return; }
   e.respondWith(networkFirst(r));
 });

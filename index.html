@@ -63,7 +63,8 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
   .hb{padding:0 8px;height:38px;border-radius:9px}
   .hb svg{width:21px;height:21px}
 }
-.adminbar{background:#14532d;color:#bbf7d0;font-size:13px;text-align:center;padding:6px}
+.adminbar{background:#14532d;color:#bbf7d0;font-size:13px;text-align:center;padding:6px;line-height:1.3}
+.adminbar b{color:#fff}
 
 .tb{display:flex;gap:10px;padding:16px 0 10px;flex-wrap:wrap}
 .search{flex:1;min-width:200px;position:relative}
@@ -119,6 +120,8 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .fld label{font-size:12.5px;font-weight:600;color:var(--mut)}
 .fld input{height:44px;width:100%;border-radius:11px;border:1px solid var(--bd);background:var(--bg);padding:0 12px;outline:0}
 .fld input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(245,158,11,.2)}
+.fld input[type=file]{height:auto;padding:8px 10px;font-size:13px}
+.fld small{color:var(--mut);font-size:11.5px;line-height:1.35;margin-top:2px}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal.tall{max-height:92vh;overflow:auto}
 .btn.ed{height:34px;flex:none;font-size:13px}
@@ -177,11 +180,6 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .ov.in .modal{transform:translate(-50%,-50%)}
 .modal h3{margin:0 0 4px;font-size:19px}.modal p{margin:0 0 16px;color:var(--mut);font-size:14px}
 .mic{width:48px;height:48px;border-radius:14px;background:rgba(245,158,11,.15);color:var(--acd);display:grid;place-items:center;margin-bottom:14px}
-.pw{position:relative}
-.pw input{width:100%;height:48px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);padding:0 46px 0 14px;outline:0}
-.pw input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(245,158,11,.2)}
-.pw input.bad{border-color:var(--err)}
-.pw button{position:absolute;right:4px;top:4px;width:40px;height:40px;color:var(--mut)}
 .err{color:var(--err);font-size:13px;min-height:20px;margin:6px 2px 0}
 .mb{display:flex;gap:10px;margin-top:10px}
 .btn{flex:1;height:46px;border-radius:12px;font-weight:600;border:1px solid var(--bd);background:var(--card)}
@@ -200,57 +198,29 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .tot{display:flex;justify-content:space-between;font-size:18px;font-weight:800}
 .lnk{color:var(--mut);font-size:13px;text-align:center}.lnk:hover{color:var(--err)}
 
-/* SEPET SATIRI — yeni profesyonel grid tasarım */
 .ci{
   display:grid;
   grid-template-columns:24px 60px 1fr auto;
   grid-template-rows:auto auto;
-  column-gap:10px;
-  row-gap:8px;
-  padding:14px 0;
-  border-bottom:1px solid var(--bd);
-  align-items:center;
-  transition:opacity .2s;
+  column-gap:10px;row-gap:8px;
+  padding:14px 0;border-bottom:1px solid var(--bd);
+  align-items:center;transition:opacity .2s;
 }
 .ci:last-child{border-bottom:0}
 .ci.off{opacity:.42}
 .ci.off .im img{filter:grayscale(.6)}
-.ci .selbox{
-  grid-column:1;grid-row:1 / span 2;
-  align-self:center;justify-self:center;
-  display:grid;place-items:center;
-  cursor:pointer;padding:6px;margin:-6px;
-}
-.ci .selbox input{
-  width:20px;height:20px;accent-color:var(--ac);
-  cursor:pointer;margin:0;
-}
-.ci .im{
-  grid-column:2;grid-row:1 / span 2;
-  width:60px;height:60px;border-radius:10px;overflow:hidden;
-  background:var(--bg);position:relative;flex:none;
-}
+.ci .selbox{grid-column:1;grid-row:1 / span 2;align-self:center;justify-self:center;display:grid;place-items:center;cursor:pointer;padding:6px;margin:-6px}
+.ci .selbox input{width:20px;height:20px;accent-color:var(--ac);cursor:pointer;margin:0}
+.ci .im{grid-column:2;grid-row:1 / span 2;width:60px;height:60px;border-radius:10px;overflow:hidden;background:var(--bg);position:relative;flex:none}
 .ci .im img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .ci .im.z{cursor:zoom-in}
 .ci .info{grid-column:3;grid-row:1;min-width:0;align-self:end}
-.ci .info b{
-  display:-webkit-box;font-weight:600;font-size:14px;line-height:1.3;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  color:var(--tx);
-}
+.ci .info b{display:-webkit-box;font-weight:600;font-size:14px;line-height:1.3;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--tx)}
 .ci .info small{color:var(--mut);font-size:12px;display:block;margin-top:3px;line-height:1.2}
-.ci .del{
-  grid-column:4;grid-row:1;align-self:end;justify-self:end;
-  width:32px;height:32px;border-radius:8px;
-  color:var(--mut);display:grid;place-items:center;transition:.15s;
-}
+.ci .del{grid-column:4;grid-row:1;align-self:end;justify-self:end;width:32px;height:32px;border-radius:8px;color:var(--mut);display:grid;place-items:center;transition:.15s}
 .ci .del:hover{background:rgba(220,38,38,.12);color:var(--err)}
 .ci .del svg{width:17px;height:17px}
-.ci .ctrl{
-  grid-column:3 / span 2;grid-row:2;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;
-}
+.ci .ctrl{grid-column:3 / span 2;grid-row:2;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ci .ctrl .q{display:flex;align-items:center;border:1px solid var(--bd);border-radius:9px;overflow:hidden;flex:none}
 .ci .ctrl .q button{width:30px;height:32px;font-size:17px;flex:none;color:var(--tx)}
 .ci .ctrl .q button:hover{background:var(--bg)}
@@ -285,7 +255,7 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
     <button class="hb" id="lock"><svg viewBox="0 0 24 24" id="lockic"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="t" id="lockt">Giriş</span></button>
   </div>
 </div></header>
-<div class="adminbar" id="adminbar" style="display:none">Yönetici modu açık · alış fiyatları ve kâr görünüyor</div>
+<div class="adminbar" id="adminbar" style="display:none"></div>
 
 <main class="wrap">
   <div class="tb">
@@ -309,9 +279,9 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 
 <div class="ov" id="lov"><div class="modal">
   <div class="mic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-  <h3>Yönetici girişi</h3><p>Alış fiyatlarını görmek için parolanı gir.</p>
-  <div class="pw"><input id="pw" type="password" placeholder="Parola" autocomplete="current-password">
-    <button id="eye" type="button" aria-label="Göster"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+  <h3>Yönetici girişi</h3><p>Parola ile alış fiyatlarını gör. Token eklersen ürün düzenleme de açılır.</p>
+  <div class="fld"><label for="pw">Parola</label><input id="pw" type="password" placeholder="Parola" autocomplete="current-password"></div>
+  <div class="fld"><label for="gh_token">GitHub Token (opsiyonel)</label><input id="gh_token" type="password" placeholder="github_pat_…" autocomplete="off"><small>Ürün ekleme / düzenleme için gerekli</small></div>
   <div class="err" id="err"></div>
   <div class="mb"><button class="btn" id="lc">Vazgeç</button><button class="btn p" id="lok">Giriş yap</button></div>
 </div></div>
@@ -320,13 +290,18 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
   <div class="lbw"><img id="lbi" alt=""><div class="cap"><b id="lbn"></b><span id="lbp"></span><br><div class="adm2" id="lba"></div></div></div></div>
 
 <div class="ov" id="eov"><div class="modal tall">
-  <h3 id="etitle">Yeni ürün</h3><p>Kaydedince CSV güncellenir, fiyat dosyaları yeniden oluşur.</p>
+  <h3 id="etitle">Yeni ürün</h3><p>Kaydedince GitHub üzerinden products.json + costs.json güncellenir.</p>
   <div class="fld"><label for="f_ad">Ürün adı</label><input id="f_ad" autocomplete="off"></div>
   <div class="f2">
     <div class="fld"><label for="f_alis">Alış fiyatı (₺)</label><input id="f_alis" inputmode="decimal"></div>
     <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal"></div>
   </div>
-  <div class="fld"><label for="f_resim">Resim linki</label><input id="f_resim" placeholder="https://… (kaydedince img/ klasörüne iner)"></div>
+  <div class="fld">
+    <label for="f_resim">Resim</label>
+    <input id="f_resim" placeholder="https://… (veya aşağıdan dosya seç)">
+    <input id="f_resim_file" type="file" accept="image/*">
+    <small>Dosya seçersen 800px webp'e dönüştürülüp GitHub'a yüklenir</small>
+  </div>
   <div class="fld"><label for="f_kat">Kategori (zorunlu)</label><input id="f_kat" placeholder="Seç veya yeni yaz" autocomplete="off"><div class="kch" id="kch"></div></div>
   <div class="err" id="eerr"></div>
   <div class="mb"><button class="btn dg" id="edel">Sil</button><button class="btn" id="ec">Vazgeç</button><button class="btn p" id="esave">Kaydet</button></div>
@@ -339,10 +314,17 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 <div id="toast"></div>
 
 <script>
+/* ==== GitHub Ayarları (kendine göre doldur) ==== */
+const GITHUB_OWNER = 'KULLANICI_ADIN';
+const GITHUB_REPO  = 'Yaman-Elektrik';
+const GITHUB_BRANCH = 'main';
+
 const PHONE = "905346381542";
 const ADMIN_PW_KEY = 'yaman_admin_pw';
+const GH_TOKEN_KEY = 'yaman_gh_token';
+const COSTS_CACHE_KEY = 'yaman_costs';
 const SHARE_NAME = '*Yaman Elektrik*\n\n*Ferhat Erdoğan*  05346381542\n\n*Murat Erdoğan*  05347151345';
-const LOC_QUERY = 'Çarşı Mahallesi 1818 Sokak No:45/C Şehzadeler Manisa';
+const LOC_QUERY = 'Çarşamba Mahallesi 1818 Sokak No:45/C Şehzadeler Manisa';
 const TL = n => n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺';
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -351,7 +333,7 @@ const SHARE_ICON = '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circ
 const TRASH_ICON = '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
 const SORTS = {new:['Son eklenen',(a,b)=>b.id-a.id], az:['Ada göre (A-Z)',(a,b)=>a.ad.localeCompare(b.ad,'tr')],
   lo:['Fiyat: düşükten yükseğe',(a,b)=>a.satis-b.satis], hi:['Fiyat: yüksekten düşüğe',(a,b)=>b.satis-a.satis]};
-let P = [], costs = null, cart = {}, cartSel = {}, cat = '', sort = 'new', LOCAL = false, PW = '', shown = 24, LIST = [];
+let P = [], costs = null, ghToken = '', cart = {}, cartSel = {}, cat = '', sort = 'new', PW = '', shown = 24, LIST = [];
 const STEP = 24;
 const MT_CATS = ['kablo','led','boru','bara'];
 const isMt = p => !!p && MT_CATS.includes((p.kat || '').trim().toLowerCase());
@@ -360,6 +342,217 @@ const r2 = x => Math.round(x * 100) / 100;
 const fmtQ = n => n.toLocaleString('tr-TR', {maximumFractionDigits: 2});
 const isSel = id => cartSel[id] !== false;
 
+/* ==== Slug (Türkçe karakter → ASCII) ==== */
+function slug(s){
+  s = String(s || '')
+    .replace(/İ/g,'i').replace(/I/g,'i').replace(/ı/g,'i')
+    .replace(/Ç/g,'c').replace(/ç/g,'c')
+    .replace(/Ğ/g,'g').replace(/ğ/g,'g')
+    .replace(/Ö/g,'o').replace(/ö/g,'o')
+    .replace(/Ş/g,'s').replace(/ş/g,'s')
+    .replace(/Ü/g,'u').replace(/ü/g,'u')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+  return (s.substring(0,60) || 'urun');
+}
+
+/* ==== Base64 yardımcıları (UTF-8 safe) ==== */
+function utf8ToB64(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for(let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function b64ToUtf8(b64){
+  const bin = atob(String(b64).replace(/\s/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for(let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function bytesToB64(bytes){
+  bytes = new Uint8Array(bytes);
+  let bin = '';
+  for(let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+/* ==== GitHub API ==== */
+async function ghGet(path){
+  if(!ghToken) throw new Error('GitHub token yok');
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}?ref=${GITHUB_BRANCH}&t=${Date.now()}`;
+  const r = await fetch(url, {
+    headers: {
+      Authorization: 'Bearer ' + ghToken,
+      Accept: 'application/vnd.github+json'
+    }
+  });
+  if(r.status === 404) return { content: null, sha: null };
+  if(!r.ok){
+    const t = await r.text().catch(() => '');
+    throw new Error('GitHub okuma hatası: ' + r.status + (t ? ' — ' + t.slice(0,100) : ''));
+  }
+  const j = await r.json();
+  const content = b64ToUtf8(j.content || '');
+  return { content, sha: j.sha };
+}
+async function ghPutBinary(path, b64content, sha, message){
+  if(!ghToken) throw new Error('GitHub token yok');
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURIComponent(path).replace(/%2F/g,'/')}`;
+  const body = { message: message || ('güncelle: ' + path), content: b64content, branch: GITHUB_BRANCH };
+  if(sha) body.sha = sha;
+  const r = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      Authorization: 'Bearer ' + ghToken,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){
+    const t = await r.text().catch(() => '');
+    throw new Error('GitHub yazma hatası: ' + r.status + (t ? ' — ' + t.slice(0,100) : ''));
+  }
+  return await r.json();
+}
+async function ghPutText(path, text, sha, message){
+  return ghPutBinary(path, utf8ToB64(text), sha, message);
+}
+
+/* ==== Şifreleme (costs.json) ==== */
+async function encryptCosts(arr, pw){
+  if(!(window.crypto && crypto.subtle)){
+    throw new Error('Ürün kaydetmek için 127.0.0.1 veya HTTPS adresi gerekli (crypto.subtle yok)');
+  }
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'}, km, {name:'AES-GCM',length:256}, false, ['encrypt']);
+  const enc = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, new TextEncoder().encode(JSON.stringify(arr)));
+  return { s: bytesToB64(salt), i: bytesToB64(iv), d: bytesToB64(new Uint8Array(enc)) };
+}
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function unlock(pw){
+  const o = await (await fetch('costs.json?' + Date.now())).json();
+  if(!(window.crypto && crypto.subtle)){
+    await new Promise((ok, no) => {
+      const sc = document.createElement('script');
+      sc.src = 'crypto-fallback.js';
+      sc.onload = ok;
+      sc.onerror = () => no(new Error('crypto-fallback.js yüklenemedi'));
+      document.head.appendChild(sc);
+    });
+    await new Promise(r => setTimeout(r, 60));
+    return JSON.parse(globalThis.__fallbackDecrypt(pw, o));
+  }
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(o.s),iterations:200000,hash:'SHA-256'}, km, {name:'AES-GCM',length:256}, false, ['decrypt']);
+  const d = await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(o.i)}, key, b64(o.d));
+  return JSON.parse(new TextDecoder().decode(d));
+}
+
+/* ==== Resim işleme ==== */
+function resizeToCanvas(im, maxSide){
+  const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
+  const sc = Math.min(1, maxSide / Math.max(w, h));
+  const cw = Math.round(w * sc), ch = Math.round(h * sc);
+  const c = document.createElement('canvas');
+  c.width = cw; c.height = ch;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.drawImage(im, 0, 0, cw, ch);
+  return c;
+}
+function processImageFromFile(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => { try { res(resizeToCanvas(im, 800)); } finally { URL.revokeObjectURL(url); } };
+    im.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Dosya görsel değil')); };
+    im.src = url;
+  });
+}
+function processImageFromUrl(url){
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => res(resizeToCanvas(im, 800));
+    im.onerror = () => rej(new Error('Resim indirilemedi (CORS engeli olabilir — dosya seçmeyi dene)'));
+    im.src = url;
+  });
+}
+async function uploadImageToGitHub(canvas, path){
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/webp', 0.82));
+  if(!blob) throw new Error('WebP oluşturulamadı');
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  const b64data = bytesToB64(buf);
+  let sha = null;
+  try { const g = await ghGet(path); sha = g.sha; } catch(_){}
+  await ghPutBinary(path, b64data, sha, 'resim: ' + path);
+}
+
+/* ==== Ürün kaydet / sil ==== */
+async function saveProduct(item, imageCanvas){
+  if(!ghToken) throw new Error('GitHub token gerekli');
+  if(!costs) throw new Error('Parola ile giriş yap');
+  if(!item.ad.trim()) throw new Error('Ürün adı gerekli');
+  if(!(item.satis > 0)) throw new Error('Perakende fiyatı gerekli');
+  if(!item.kat.trim()) throw new Error('Kategori zorunlu');
+
+  let resimYolu = item.resim || '';
+
+  if(imageCanvas){
+    const path = `img/${slug(item.kat)}/${slug(item.ad)}.webp`;
+    await uploadImageToGitHub(imageCanvas, path);
+    resimYolu = path;
+  } else if(/^https?:\/\//i.test(item.resim)){
+    const c = await processImageFromUrl(item.resim);
+    const path = `img/${slug(item.kat)}/${slug(item.ad)}.webp`;
+    await uploadImageToGitHub(c, path);
+    resimYolu = path;
+  }
+
+  if(item.id === null || item.id === undefined){
+    const id = P.length;
+    P.push({ id, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat });
+    costs.push(item.alis);
+  } else {
+    const oldId = Number(item.id);
+    P[oldId] = { id: oldId, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat };
+    costs[oldId] = item.alis;
+  }
+
+  // products.json
+  const gp = await ghGet('products.json');
+  await ghPutText('products.json', JSON.stringify(P), gp.sha, 'urunler: ' + item.ad);
+
+  // costs.json
+  const enc = await encryptCosts(costs, PW);
+  const gc = await ghGet('costs.json');
+  await ghPutText('costs.json', JSON.stringify(enc), gc.sha, 'costs guncellendi');
+
+  try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
+}
+async function deleteProduct(id){
+  if(!ghToken) throw new Error('GitHub token gerekli');
+  id = Number(id);
+  P.splice(id, 1);
+  costs.splice(id, 1);
+  P = P.map((p, i) => ({ ...p, id: i }));
+
+  const gp = await ghGet('products.json');
+  await ghPutText('products.json', JSON.stringify(P), gp.sha, 'urun silindi');
+
+  const enc = await encryptCosts(costs, PW);
+  const gc = await ghGet('costs.json');
+  await ghPutText('costs.json', JSON.stringify(enc), gc.sha, 'costs guncellendi');
+
+  try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
+}
+
+/* ==== Sepet miktar kontrol ==== */
 function qctl(p, n, c){
   const mid = isMt(p)
     ? `<input class="qi" inputmode="decimal" value="${fmtQ(n)}" onfocus="this.select()" oninput="setQtyLive(${p.id},this.value)" onchange="setQty(${p.id},this.value)"><em class="mu">mt</em>`
@@ -414,7 +607,7 @@ const save = () => { try { localStorage.setItem('cart', JSON.stringify(cart)); }
 const saveSel = () => { try { localStorage.setItem('cartSel', JSON.stringify(cartSel)); } catch(e){} };
 const img = p => p.resim ? `<img loading="lazy" src="${esc(p.resim)}" alt="" onerror="this.remove()">` : '';
 
-function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('show'),2200); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('show'),2400); }
 function openOv(id){ const o=$(id); o.classList.add('show'); requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('in'))); }
 function closeOv(id){ const o=$(id); o.classList.remove('in'); setTimeout(()=>o.classList.remove('show'),220); }
 
@@ -437,16 +630,30 @@ window.addEventListener('popstate', () => {
   closeOv(id);
 });
 
+/* ==== Başlat ==== */
 async function init(){
-  try { const r = await fetch('api.php?ping&t=' + Date.now()); const j = r.ok ? await r.json() : null; LOCAL = !!(j && j.php === true); } catch(e){ LOCAL = false; }
-  if(!LOCAL && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
   try { P = await (await fetch('products.json?' + Date.now())).json(); } catch(e){ P = []; }
   drawChips(); drawSort(); render(); sum();
-  let savedPw = null;
+
+  let savedPw = null, savedTk = null, cached = null;
   try { savedPw = sessionStorage.getItem(ADMIN_PW_KEY); } catch(_){}
+  try { savedTk = sessionStorage.getItem(GH_TOKEN_KEY); } catch(_){}
+  try { cached = sessionStorage.getItem(COSTS_CACHE_KEY); } catch(_){}
+
   if(savedPw){
-    try { costs = await unlock(savedPw); PW = savedPw; setAdmin(true); }
-    catch(_){ try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(__){} }
+    if(savedTk) ghToken = savedTk;
+    if(cached){
+      try { costs = JSON.parse(cached); PW = savedPw; setAdmin(true); return; } catch(_){}
+    }
+    try {
+      costs = await unlock(savedPw); PW = savedPw;
+      try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
+      setAdmin(true);
+    } catch(_){
+      try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(__){}
+      try { sessionStorage.removeItem(COSTS_CACHE_KEY); } catch(__){}
+    }
   }
 }
 function drawChips(){
@@ -466,7 +673,7 @@ function render(){
     return `<div class="card"><div class="ph${p.resim?' z':''}" ${p.resim?`onclick="zoom(${p.id})"`:''}>${BOX}${img(p)}${p.kat?`<span class="tag" data-k="${esc(p.kat)}" onclick="event.stopPropagation();pickCat(this.dataset.k)">${esc(p.kat)}</span>`:''}</div>
     <div class="bd"><div class="nm">${esc(p.ad)}</div><div class="pr">${TL(p.satis)}<span class="u"> / ${unit(p)}</span></div>
     ${costs?`<div class="adm"><span>Alış: ${TL(c)}</span><span>Kâr: <b>${TL(p.satis-c)}</b>${c?` (%${Math.round((p.satis-c)/c*100)})`:''}</span></div>`:''}
-    ${costs&&LOCAL?`<button class="btn ed" onclick="edit(${p.id})">Düzenle</button>`:''}
+    ${(costs&&ghToken)?`<button class="btn ed" onclick="edit(${p.id})">Düzenle</button>`:''}
     ${n?qctl(p,n,'step')
        :`<button class="add" onclick="add(${p.id},1)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sepete ekle</button>`}
     <button class="share-p" onclick="shareProduct(${p.id})">${SHARE_ICON}Ürünü Paylaş</button>
@@ -516,19 +723,11 @@ function drawCart(){
     const p = P[id];
     const selected = isSel(id);
     return `<div class="ci${selected?'':' off'}" data-id="${id}">
-      <label class="selbox" aria-label="Ürünü uygula">
-        <input type="checkbox" ${selected?'checked':''} onchange="toggleSel(${id})">
-      </label>
+      <label class="selbox"><input type="checkbox" ${selected?'checked':''} onchange="toggleSel(${id})"></label>
       <div class="im${p.resim?' z':''}" ${p.resim?`onclick="zoom(${id})"`:''}>${img(p)}</div>
-      <div class="info">
-        <b>${esc(p.ad)}</b>
-        <small>${TL(p.satis)} / ${unit(p)}</small>
-      </div>
+      <div class="info"><b>${esc(p.ad)}</b><small>${TL(p.satis)} / ${unit(p)}</small></div>
       <button class="del" onclick="removeItem(${id})" aria-label="Sepetten çıkar">${TRASH_ICON}</button>
-      <div class="ctrl">
-        ${qctl(p, n, 'q')}
-        <span class="line-tot">${TL(p.satis*n)}</span>
-      </div>
+      <div class="ctrl">${qctl(p, n, 'q')}<span class="line-tot">${TL(p.satis*n)}</span></div>
     </div>`;
   }).join('') : `<div class="empty" style="padding:50px 0">${BOX}<div>Sepetin boş</div></div>`;
   if(!E.length){ $('cf').innerHTML=''; return; }
@@ -551,14 +750,10 @@ function cartText(){
 }
 const shareWA = () => window.open('https://wa.me/?text=' + encodeURIComponent(cartText()), '_blank');
 const orderWA = () => window.open('https://wa.me/' + PHONE + '?text=' + encodeURIComponent(cartText()), '_blank');
-
 function adminShareWA(){
   const E = Object.entries(cart).filter(([id]) => P[id] && isSel(id));
   if(!E.length){ toast('Seçili ürün yok'); return; }
-  const t = E.map(([id,n]) => {
-    const u = isMt(P[id]) ? 'Metre' : 'Adet';
-    return P[id].ad + ' = ' + fmtQ(n) + ' ' + u;
-  }).join('\n');
+  const t = E.map(([id,n]) => `${P[id].ad} = ${fmtQ(n)} ${isMt(P[id]) ? 'Metre' : 'Adet'}`).join('\n');
   window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
 }
 
@@ -568,231 +763,199 @@ $('shar').onclick = () => {
 };
 $('loc').onclick = () => window.open('https://maps.google.com/?q=' + encodeURIComponent(LOC_QUERY), '_blank');
 
-/* Görsel oluşturma */
+/* ==== Ürün paylaş görseli (canvas) ==== */
 function loadImage(src){
   return new Promise(res => {
     if(!src) return res(null);
-    const im = new Image();
-    im.onload = () => res(im);
-    im.onerror = () => res(null);
-    im.src = src;
+    const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src;
   });
 }
 function drawImageContainBlur(ctx, im, x, y, w, h){
   const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height;
-  ctx.save();
-  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
   ctx.filter = 'blur(28px) brightness(0.55)';
   const scB = Math.max(w/iw, h/ih);
-  const dwB = iw*scB, dhB = ih*scB;
-  ctx.drawImage(im, x + (w-dwB)/2, y + (h-dhB)/2, dwB, dhB);
+  ctx.drawImage(im, x + (w - iw*scB)/2, y + (h - ih*scB)/2, iw*scB, ih*scB);
   ctx.restore();
   const scC = Math.min(w/iw, h/ih);
-  const dwC = iw*scC, dhC = ih*scC;
-  ctx.drawImage(im, x + (w-dwC)/2, y + (h-dhC)/2, dwC, dhC);
+  ctx.drawImage(im, x + (w - iw*scC)/2, y + (h - ih*scC)/2, iw*scC, ih*scC);
 }
 function wrapText(ctx, text, x, y, maxW, lineH){
   const words = String(text).split(' ');
   let line = '', curY = y;
   for(const word of words){
     const test = line ? line + ' ' + word : word;
-    if(ctx.measureText(test).width > maxW && line){
-      ctx.fillText(line, x, curY); line = word; curY += lineH;
-    } else line = test;
+    if(ctx.measureText(test).width > maxW && line){ ctx.fillText(line, x, curY); line = word; curY += lineH; }
+    else line = test;
   }
   if(line) ctx.fillText(line, x, curY);
   return curY;
 }
 function roundRectPath(ctx, x, y, w, h, r){
   ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y);
-  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r);
-  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h);
-  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r);
-  ctx.quadraticCurveTo(x, y, x+r, y);
-  ctx.closePath();
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath();
 }
 function drawSpacedText(ctx, text, x, y, spacing){
   let cx = x;
-  for(const ch of text){
-    ctx.fillText(ch, cx, y);
-    cx += ctx.measureText(ch).width + spacing;
-  }
+  for(const ch of text){ ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + spacing; }
 }
 function downloadFile(blob, filename){
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
+  const a = document.createElement('a'); a.href = url; a.download = filename;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 1500);
 }
-
 async function shareProduct(id){
-  const p = P[id];
-  if(!p) return;
+  const p = P[id]; if(!p) return;
   toast('Görsel hazırlanıyor…');
   try {
     const W = 1080, H = 1080, PAD = 70;
-    const canvas = document.createElement('canvas');
-    canvas.width = W; canvas.height = H;
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
-
     const bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0,    '#0a0e1a');
-    bg.addColorStop(0.55, '#0f172a');
-    bg.addColorStop(1,    '#1a2332');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
+    bg.addColorStop(0, '#0a0e1a'); bg.addColorStop(0.55, '#0f172a'); bg.addColorStop(1, '#1a2332');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(W/2, -200, 0, W/2, -200, W);
-    glow.addColorStop(0, 'rgba(245,158,11,0.16)');
-    glow.addColorStop(1, 'rgba(245,158,11,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, H);
+    glow.addColorStop(0, 'rgba(245,158,11,0.16)'); glow.addColorStop(1, 'rgba(245,158,11,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
 
-    const IMG_W = W - PAD*2;
-    const IMG_H = 620;
-    const IMG_Y = PAD + 20;
-    const R = 28;
-
+    const IMG_W = W - PAD*2, IMG_H = 620, IMG_Y = PAD + 20, R = 28;
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.55)';
-    ctx.shadowBlur = 50;
-    ctx.shadowOffsetY = 24;
+    ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 24;
     roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
-    ctx.fillStyle = '#111827';
-    ctx.fill();
+    ctx.fillStyle = '#111827'; ctx.fill();
     ctx.restore();
 
     const im = await loadImage(p.resim);
     if(im){
-      ctx.save();
-      roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
-      ctx.clip();
+      ctx.save(); roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R); ctx.clip();
       drawImageContainBlur(ctx, im, PAD, IMG_Y, IMG_W, IMG_H);
       ctx.restore();
     }
-
     roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
-    ctx.strokeStyle = 'rgba(245,158,11,0.55)';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
+    ctx.strokeStyle = 'rgba(245,158,11,0.55)'; ctx.lineWidth = 2.5; ctx.stroke();
 
-    ctx.textBaseline = 'top';
-    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top'; ctx.textAlign = 'left';
     ctx.fillStyle = '#ffffff';
     ctx.font = '600 42px system-ui, -apple-system, "Segoe UI", sans-serif';
-    const TX = PAD + 10;
-    const TW = W - PAD*2 - 20;
-    const ny = IMG_Y + IMG_H + 75;
+    const TX = PAD + 10, TW = W - PAD*2 - 20, ny = IMG_Y + IMG_H + 75;
     const nameEnd = wrapText(ctx, p.ad, TX, ny, TW, 54);
 
     const py = nameEnd + 75;
     const priceGrad = ctx.createLinearGradient(TX, py, TX + 700, py + 80);
-    priceGrad.addColorStop(0,   '#fbbf24');
-    priceGrad.addColorStop(0.5, '#f59e0b');
-    priceGrad.addColorStop(1,   '#b45309');
+    priceGrad.addColorStop(0, '#fbbf24'); priceGrad.addColorStop(0.5, '#f59e0b'); priceGrad.addColorStop(1, '#b45309');
     ctx.fillStyle = priceGrad;
     ctx.font = '800 92px system-ui, -apple-system, "Segoe UI", sans-serif';
     ctx.fillText(TL(p.satis) + ' / ' + unit(p), TX, py);
 
-    const BAND_H = 130;
-    const BAND_Y = H - BAND_H;
-    ctx.fillStyle = 'rgba(245,158,11,0.65)';
-    ctx.fillRect(PAD, BAND_Y, W - PAD*2, 2);
-
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fbbf24';
+    const BAND_H = 130, BAND_Y = H - BAND_H;
+    ctx.fillStyle = 'rgba(245,158,11,0.65)'; ctx.fillRect(PAD, BAND_Y, W - PAD*2, 2);
+    ctx.textBaseline = 'middle'; ctx.fillStyle = '#fbbf24';
     ctx.font = '700 34px system-ui, -apple-system, "Segoe UI", sans-serif';
     drawSpacedText(ctx, 'YAMAN ELEKTRİK', TX, BAND_Y + BAND_H/2, 10);
 
     const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
     if(!blob){ toast('Görsel oluşturulamadı'); return; }
-    const filename = 'yaman-urun.png';
-    const file = new File([blob], filename, { type: 'image/png' });
+    const file = new File([blob], 'yaman-urun.png', { type: 'image/png' });
     const shareText = location.origin + location.pathname;
 
     if(navigator.canShare && navigator.canShare({ files: [file] })){
       try { await navigator.share({ files: [file], text: shareText }); return; }
       catch(err){ if(err.name === 'AbortError') return; }
     }
-
-    downloadFile(blob, filename);
-    toast('Görsel indirildi, WhatsApp\'a ekleyebilirsin');
-    setTimeout(() => { window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank'); }, 350);
-  } catch(e){
-    console.error(e);
-    toast('Paylaşım başarısız');
-  }
+    downloadFile(blob, 'yaman-urun.png');
+    toast('Görsel indirildi');
+    setTimeout(() => window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank'), 350);
+  } catch(e){ console.error(e); toast('Paylaşım başarısız'); }
 }
 
-/* yönetici */
-const b64 = s => Uint8Array.from(atob(s), c=>c.charCodeAt(0));
-async function unlock(pw){
-  const o = await (await fetch('costs.json?'+Date.now())).json();
-  if(!(window.crypto && crypto.subtle)){
-    await new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = 'crypto-fallback.js'; sc.onload = ok; sc.onerror = () => no(new Error('crypto-fallback.js yüklenemedi')); document.head.appendChild(sc); });
-    await new Promise(r => setTimeout(r, 60));
-    return JSON.parse(globalThis.__fallbackDecrypt(pw, o));
-  }
-  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
-  const key = await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(o.s),iterations:200000,hash:'SHA-256'}, km, {name:'AES-GCM',length:256}, false, ['decrypt']);
-  const d = await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(o.i)}, key, b64(o.d));
-  return JSON.parse(new TextDecoder().decode(d));
-}
+/* ==== Yönetici ==== */
 function setAdmin(on){
-  $('lock').classList.toggle('on',on); $('lockt').textContent = on?'Çıkış':'Giriş';
-  $('adminbar').style.display = on?'block':'none'; $('newb').style.display = on&&LOCAL?'':'none'; render();
+  $('lock').classList.toggle('on', on);
+  $('lockt').textContent = on ? 'Çıkış' : 'Giriş';
+  const bar = $('adminbar');
+  if(!on){ bar.style.display = 'none'; bar.innerHTML = ''; }
+  else {
+    bar.style.display = 'block';
+    bar.innerHTML = ghToken
+      ? 'Yönetici modu · <b>yazma yetkili</b> (alış fiyatları + ürün düzenleme)'
+      : 'Yönetici modu · <b>sadece okuma</b> (alış fiyatları görünür, düzenleme kapalı)';
+  }
+  $('newb').style.display = (on && ghToken) ? '' : 'none';
+  render();
 }
 async function doLogin(){
-  const pw = $('pw').value; if(!pw) return;
-  $('lok').disabled = true; $('lok').textContent = 'Doğrulanıyor…'; $('err').textContent=''; $('pw').classList.remove('bad');
+  const pw = $('pw').value;
+  const tk = $('gh_token').value.trim();
+  if(!pw){ $('err').textContent = 'Parola gerekli'; return; }
+  $('lok').disabled = true; $('lok').textContent = 'Doğrulanıyor…';
+  $('err').textContent = ''; $('pw').classList.remove('bad');
   try {
     costs = await unlock(pw); PW = pw;
+    if(tk){
+      if(!/^(github_pat_|ghp_)/.test(tk)) throw new Error('Token github_pat_ veya ghp_ ile başlamalı');
+      ghToken = tk;
+      try { sessionStorage.setItem(GH_TOKEN_KEY, tk); } catch(_){}
+    }
     try { sessionStorage.setItem(ADMIN_PW_KEY, pw); } catch(_){}
-    closeOv('lov'); setAdmin(true); toast('Yönetici modu açıldı');
-  }
-  catch(e){
-    $('err').textContent = e.name === 'OperationError' ? 'Parola yanlış, tekrar dene.' : 'Giriş yapılamadı: ' + e.message;
-    if(e.name === 'OperationError') $('pw').classList.add('bad');
+    try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
+    closeOv('lov'); setAdmin(true);
+    toast(ghToken ? 'Yönetici modu (yazma yetkili)' : 'Yönetici modu (sadece okuma)');
+  } catch(e){
+    const msg = (e && e.name === 'OperationError') ? 'Parola yanlış, tekrar dene.' : (e && e.message) || 'Giriş yapılamadı';
+    $('err').textContent = msg;
+    if(e && e.name === 'OperationError') $('pw').classList.add('bad');
   }
   $('lok').disabled = false; $('lok').textContent = 'Giriş yap';
 }
 $('lock').onclick = () => {
   if(costs){
-    costs=null; PW='';
+    costs = null; PW = ''; ghToken = '';
     try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(_){}
+    try { sessionStorage.removeItem(GH_TOKEN_KEY); } catch(_){}
+    try { sessionStorage.removeItem(COSTS_CACHE_KEY); } catch(_){}
     setAdmin(false); toast('Çıkış yapıldı'); return;
   }
-  $('pw').value=''; $('err').textContent=''; $('pw').classList.remove('bad'); openOv('lov'); setTimeout(()=>$('pw').focus(),250);
+  $('pw').value = ''; $('gh_token').value = ''; $('err').textContent = '';
+  $('pw').classList.remove('bad');
+  openOv('lov'); setTimeout(()=>$('pw').focus(), 250);
 };
 $('lok').onclick = doLogin;
-$('pw').onkeydown = e => { if(e.key==='Enter') doLogin(); };
+$('pw').onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); $('gh_token').focus(); } };
+$('gh_token').onkeydown = e => { if(e.key === 'Enter') doLogin(); };
 $('lc').onclick = () => closeOv('lov');
-$('eye').onclick = () => { const p=$('pw'); p.type = p.type==='password'?'text':'password'; };
-$('lov').onclick = e => { if(e.target.id==='lov') closeOv('lov'); };
+$('lov').onclick = e => { if(e.target.id === 'lov') closeOv('lov'); };
 
+/* ==== Sepet paneli ==== */
 const openCart = () => { drawCart(); openOv('cov'); ovPush('cov'); };
-$('fopen').onclick = openCart; $('cx').onclick = () => ovClose('cov');
-$('cov').onclick = e => { if(e.target.id==='cov') ovClose('cov'); };
-document.onkeydown = e => { if(e.key==='Escape'){
+$('fopen').onclick = openCart;
+$('cx').onclick = () => ovClose('cov');
+$('cov').onclick = e => { if(e.target.id === 'cov') ovClose('cov'); };
+document.onkeydown = e => { if(e.key === 'Escape'){
   if($('lb').classList.contains('show')){ ovClose('lb'); return; }
   if($('cov').classList.contains('show')){ ovClose('cov'); return; }
   closeOv('lov'); closeOv('eov'); $('dd').classList.remove('open');
 } };
 
+/* ==== Ürün düzenleme ==== */
 let editId = null, delArm = false;
 function edit(id){
+  if(!ghToken){ toast('Düzenleme için GitHub token gerekli'); return; }
   editId = id; delArm = false;
-  const p = id === null ? {ad:'',satis:'',resim:'',kat:''} : P[id];
-  $('etitle').textContent = id === null ? 'Yeni ürün' : 'Ürünü düzenle';
-  $('f_ad').value = p.ad; $('f_alis').value = id === null ? '' : costs[id]; $('f_satis').value = p.satis;
-  $('f_resim').value = p.resim; $('f_kat').value = p.kat;
-  $('edel').style.display = id === null ? 'none' : ''; $('edel').textContent = 'Sil'; $('edel').classList.remove('arm');
+  const p = (id === null) ? {ad:'',satis:'',resim:'',kat:''} : P[id];
+  $('etitle').textContent = (id === null) ? 'Yeni ürün' : 'Ürünü düzenle';
+  $('f_ad').value = p.ad || '';
+  $('f_alis').value = (id === null) ? '' : (costs ? costs[id] : '');
+  $('f_satis').value = p.satis || '';
+  $('f_resim').value = (/^https?:/i.test(p.resim || '')) ? p.resim : '';
+  $('f_resim_file').value = '';
+  $('f_kat').value = p.kat || '';
+  $('edel').style.display = (id === null) ? 'none' : '';
+  $('edel').textContent = 'Sil';
+  $('edel').classList.remove('arm');
   $('eerr').textContent = '';
   drawKch();
   openOv('eov');
@@ -801,43 +964,64 @@ function drawKch(){
   $('f_kat').classList.remove('bad');
   const v = $('f_kat').value.trim().toLowerCase();
   const cs = [...new Set(P.map(x => x.kat).filter(Boolean))].sort((a,b) => a.localeCompare(b,'tr'));
-  $('kch').innerHTML = cs.length ? cs.map(k => `<button type="button" class="chip ${k.toLowerCase()===v?'on':''}" data-k="${esc(k)}">${esc(k)}</button>`).join('')
+  $('kch').innerHTML = cs.length
+    ? cs.map(k => `<button type="button" class="chip ${k.toLowerCase()===v?'on':''}" data-k="${esc(k)}">${esc(k)}</button>`).join('')
     : '<small>Henüz kategori yok, yukarıya yazarak oluştur.</small>';
 }
 $('kch').onclick = e => { const b = e.target.closest('.chip'); if(!b) return; $('f_kat').value = b.dataset.k; drawKch(); };
 $('f_kat').oninput = drawKch;
-async function api(body){
-  const r = await fetch('api.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pw:PW, ...body})});
-  const j = await r.json().catch(() => ({error:'Sunucu yanıtı okunamadı'}));
-  if(!r.ok || j.error) throw new Error(j.error || 'Hata');
-  return j;
-}
-async function reload(){
-  P = await (await fetch('products.json?' + Date.now())).json();
-  costs = await unlock(PW);
-  drawChips(); render(); sum();
-}
-async function run(body, msg){
-  $('esave').disabled = $('edel').disabled = true; $('eerr').textContent = ''; $('esave').textContent = 'Kaydediliyor…';
-  try { await api(body); await reload(); closeOv('eov'); toast(msg); }
-  catch(e){ $('eerr').textContent = e.message; }
-  $('esave').disabled = $('edel').disabled = false; $('esave').textContent = 'Kaydet';
-}
 $('newb').onclick = () => edit(null);
-$('esave').onclick = () => {
-  const item = {id:editId, ad:$('f_ad').value, alis:$('f_alis').value, satis:$('f_satis').value, resim:$('f_resim').value, kat:$('f_kat').value};
-  if(!item.ad.trim()){ $('eerr').textContent = 'Ürün adı gerekli.'; return; }
-  if(!item.kat.trim()){ $('eerr').textContent = 'Kategori seçmek zorunlu.'; $('f_kat').classList.add('bad'); return; }
-  run({action:'save', item}, 'Kaydedildi');
+
+$('esave').onclick = async () => {
+  const item = {
+    id: editId,
+    ad: $('f_ad').value.trim(),
+    alis: parseFloat(String($('f_alis').value).replace(',', '.')) || 0,
+    satis: parseFloat(String($('f_satis').value).replace(',', '.')) || 0,
+    resim: $('f_resim').value.trim(),
+    kat: $('f_kat').value.trim()
+  };
+  if(!item.ad){ $('eerr').textContent = 'Ürün adı gerekli.'; return; }
+  if(!item.kat){ $('eerr').textContent = 'Kategori seçmek zorunlu.'; $('f_kat').classList.add('bad'); return; }
+  if(!(item.satis > 0)){ $('eerr').textContent = 'Perakende fiyatı gerekli.'; return; }
+
+  const file = $('f_resim_file').files[0];
+  $('esave').disabled = $('edel').disabled = true;
+  $('eerr').textContent = '';
+  $('esave').textContent = 'Kaydediliyor…';
+  try {
+    let canvas = null;
+    if(file) canvas = await processImageFromFile(file);
+    await saveProduct(item, canvas);
+    closeOv('eov');
+    drawChips(); render(); sum();
+    toast('Kaydedildi');
+  } catch(e){
+    console.error(e);
+    $('eerr').textContent = e.message || 'Kaydetme başarısız';
+  }
+  $('esave').disabled = $('edel').disabled = false;
+  $('esave').textContent = 'Kaydet';
 };
-$('edel').onclick = () => {
+$('edel').onclick = async () => {
   if(!delArm){ delArm = true; $('edel').textContent = 'Emin misin? Sil'; $('edel').classList.add('arm'); return; }
-  cart = {}; cartSel = {}; save(); saveSel();
-  run({action:'delete', id:editId}, 'Ürün silindi');
+  $('esave').disabled = $('edel').disabled = true;
+  $('eerr').textContent = '';
+  try {
+    await deleteProduct(editId);
+    cart = {}; cartSel = {}; save(); saveSel();
+    closeOv('eov');
+    drawChips(); render(); sum();
+    toast('Ürün silindi');
+  } catch(e){
+    $('eerr').textContent = e.message;
+  }
+  $('esave').disabled = $('edel').disabled = false;
 };
 $('ec').onclick = () => closeOv('eov');
 $('eov').onclick = e => { if(e.target.id === 'eov') closeOv('eov'); };
 
+/* ==== PWA / diğer ==== */
 let DP = null;
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); DP = e; $('inst').style.display = ''; });
 addEventListener('appinstalled', () => { DP = null; $('inst').style.display = 'none'; toast('Uygulama yüklendi'); });
