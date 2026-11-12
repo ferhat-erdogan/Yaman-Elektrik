@@ -62,6 +62,7 @@ function updatePublishUI(){
     else { badge.style.display = 'none'; }
   }
   const bar = $('adminbar');
+  bar.style.display = isAdmin ? 'block' : 'none';
   if(isAdmin){
     bar.classList.toggle('pending', has);
     if(has){
