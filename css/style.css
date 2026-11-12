@@ -250,3 +250,15 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 #publishProgress{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-bottom:12px}
 #publishProgress .bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0;transition:width .2s;border-radius:3px}
 #publishStatus{font-size:12.5px;color:var(--mut);margin:0}
+/* ==== Çıkış uyarı modalı ==== */
+.warn-mic{background:rgba(245,158,11,.18);color:var(--acd);box-shadow:0 4px 14px rgba(245,158,11,.25)}
+.pending-summary{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:13.5px;max-height:180px;overflow-y:auto}
+.pending-summary:empty{display:none}
+.pending-summary .ps-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;color:var(--mut)}
+.pending-summary .ps-row + .ps-row{border-top:1px solid var(--bd)}
+.pending-summary .ps-row b{color:var(--tx);font-size:15px;font-weight:800;letter-spacing:-.3px}
+.pending-summary .ps-row.plus b{color:var(--ok)}
+.pending-summary .ps-row.edit b{color:var(--acd)}
+.pending-summary .ps-row.del b{color:var(--err)}
+.btn.danger{background:var(--err);border-color:var(--err);color:#fff}
+.btn.danger:hover{background:#b91c1c;border-color:#b91c1c}

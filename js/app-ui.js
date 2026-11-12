@@ -1,18 +1,39 @@
 /* ==== Lightbox ==== */
 $('lb').onclick = () => ovClose('lb');
 
-/* ==== Yönetici giriş ==== */
+/* ==== Çıkış yardımcıları ==== */
+function showLogoutConfirm(){
+  const a = pending.added.length;
+  const e = pending.edited.length;
+  const d = pending.deleted.length;
+  const total = a + e + d;
+
+  const rows = [];
+  if(a) rows.push(`<div class="ps-row plus"><span>Eklenen</span><b>+${a}</b></div>`);
+  if(e) rows.push(`<div class="ps-row edit"><span>Düzenlenen</span><b>~${e}</b></div>`);
+  if(d) rows.push(`<div class="ps-row del"><span>Silinen</span><b>-${d}</b></div>`);
+
+  $('confirmList').innerHTML = rows.join('');
+  $('confirmMsg').textContent = `${total} değişiklik henüz yayınlanmadı. Çıkarsan bu değişiklikler kaybolur.`;
+  openOv('confirmOv');
+}
+
+function doLogout(){
+  costs = null; PW = ''; ghToken = '';
+  try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(_){}
+  try { sessionStorage.removeItem(GH_TOKEN_KEY); } catch(_){}
+  try { sessionStorage.removeItem(COSTS_CACHE_KEY); } catch(_){}
+  pending.products = pending.costs = false;
+  pending.images.clear(); pending.deletedImages.clear();
+  pending.added.length = 0; pending.edited.length = 0; pending.deleted.length = 0;
+  setAdmin(false); toast('Çıkış yapıldı');
+}
+
+/* ==== Yönetici giriş / çıkış ==== */
 $('lock').onclick = () => {
   if(costs){
-    if(hasPending() && !confirm('Bekleyen değişiklikler var, çıkarsan kaybolur. Devam edilsin mi?')) return;
-    costs = null; PW = ''; ghToken = '';
-    try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(_){}
-    try { sessionStorage.removeItem(GH_TOKEN_KEY); } catch(_){}
-    try { sessionStorage.removeItem(COSTS_CACHE_KEY); } catch(_){}
-    pending.products = pending.costs = false;
-    pending.images.clear(); pending.deletedImages.clear();
-    pending.added.length = 0; pending.edited.length = 0; pending.deleted.length = 0;
-    setAdmin(false); toast('Çıkış yapıldı'); return;
+    if(hasPending()){ showLogoutConfirm(); return; }
+    doLogout(); return;
   }
   $('pw').value = ''; $('gh_token').value = ''; $('err').textContent = '';
   $('pw').classList.remove('bad');
@@ -24,6 +45,11 @@ $('gh_token').onkeydown = e => { if(e.key === 'Enter') doLogin(); };
 $('lc').onclick = () => closeOv('lov');
 $('lov').onclick = e => { if(e.target.id === 'lov') closeOv('lov'); };
 
+/* ==== Çıkış onay modalı ==== */
+$('confirmNo').onclick = () => closeOv('confirmOv');
+$('confirmYes').onclick = () => { closeOv('confirmOv'); doLogout(); };
+$('confirmOv').onclick = e => { if(e.target.id === 'confirmOv') closeOv('confirmOv'); };
+
 /* ==== Sepet paneli ==== */
 const openCart = () => { drawCart(); openOv('cov'); ovPush('cov'); };
 $('fopen').onclick = openCart;
@@ -32,6 +58,7 @@ $('cov').onclick = e => { if(e.target.id === 'cov') ovClose('cov'); };
 document.onkeydown = e => { if(e.key === 'Escape'){
   if($('lb').classList.contains('show')){ ovClose('lb'); return; }
   if($('cov').classList.contains('show')){ ovClose('cov'); return; }
+  if($('confirmOv').classList.contains('show')){ closeOv('confirmOv'); return; }
   closeOv('lov'); closeOv('eov'); $('dd').classList.remove('open');
 } };
 
