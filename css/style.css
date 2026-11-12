@@ -19,7 +19,7 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .acts{display:flex;gap:8px;align-items:center;flex:none}
 .hb{display:flex;align-items:center;gap:7px;height:42px;padding:0 12px;border-radius:11px;background:rgba(255,255,255,.08);color:#fff;font-weight:500;font-size:14px;position:relative;transition:.15s;border:1px solid rgba(255,255,255,.06);flex:none}
 .hb:hover{background:rgba(255,255,255,.14);border-color:rgba(245,158,11,.35)}
-.hb.on{background:rgba(34,197,94,.18);color:#86efac;border-color:rgba(34,197,94,.35)}
+.hb.on{background:rgba(220,38,38,.18);color:#fca5a5;border-color:rgba(220,38,38,.35)}
 .hb.pub{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111;border-color:transparent;font-weight:700;box-shadow:0 4px 14px rgba(245,158,11,.35)}
 .hb.pub:hover{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
 .hb.pub:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
@@ -52,7 +52,9 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
   .hb{padding:0 8px;height:38px;border-radius:9px}
   .hb svg{width:21px;height:21px}
 }
-.adminbar{background:#14532d;color:#bbf7d0;font-size:13px;text-align:center;padding:6px;line-height:1.3}
+.adminbar{background:#7f1d1d;color:#fecaca;font-size:13px;text-align:center;padding:6px;line-height:1.3;position:sticky;top:64px;z-index:19}
+@media(max-width:520px){.adminbar{top:60px}}
+@media(max-width:400px){.adminbar{top:58px}}
 .adminbar b{color:#fff}
 .adminbar.pending{background:#78350f;color:#fef3c7}
 .adminbar.pending b{color:#fff}
