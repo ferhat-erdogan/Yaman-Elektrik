@@ -264,3 +264,58 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 .pending-summary .ps-row.del b{color:var(--err)}
 .btn.danger{background:var(--err);border-color:var(--err);color:#fff}
 .btn.danger:hover{background:#b91c1c;border-color:#b91c1c}
+/* ==== Yayın onay modalı ==== */
+.pub-mic{background:rgba(245,158,11,.15);color:var(--acd)}
+.pending-summary{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:13.5px;max-height:180px;overflow-y:auto}
+.pending-summary:empty{display:none}
+.pending-summary .ps-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;color:var(--mut)}
+.pending-summary .ps-row + .ps-row{border-top:1px solid var(--bd)}
+.pending-summary .ps-row b{color:var(--tx);font-size:15px;font-weight:800;letter-spacing:-.3px}
+.pending-summary .ps-row.plus b{color:var(--ok)}
+.pending-summary .ps-row.edit b{color:var(--acd)}
+.pending-summary .ps-row.del b{color:var(--err)}
+.pending-summary .ps-row.img b{color:#0284c7}
+.btn.danger{background:var(--err);border-color:var(--err);color:#fff}
+.btn.danger:hover{background:#b91c1c;border-color:#b91c1c}
+
+/* ==== Stok toggle switch ==== */
+.stock-toggle{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 14px;
+  background:var(--bg);border:1px solid var(--bd);border-radius:11px;
+  cursor:pointer;transition:.15s;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.stock-toggle:hover{border-color:var(--ac)}
+.stock-toggle .stock-info{flex:1;min-width:0}
+.stock-toggle .stock-info b{
+  display:block;font-size:14px;font-weight:600;
+  color:var(--ok);margin-bottom:2px;transition:.15s;
+}
+.stock-toggle .stock-info small{
+  display:block;font-size:11.5px;color:var(--mut);line-height:1.35;
+}
+.stock-toggle.off .stock-info b{color:var(--err)}
+.switch{
+  position:relative;display:inline-block;
+  width:46px;height:26px;flex:none;
+}
+.switch input{
+  opacity:0;width:0;height:0;position:absolute;
+}
+.switch .slider{
+  position:absolute;inset:0;
+  background:var(--bd);border-radius:26px;
+  transition:.25s;cursor:pointer;
+}
+.switch .slider::before{
+  content:'';
+  position:absolute;height:20px;width:20px;
+  left:3px;top:3px;
+  background:#fff;border-radius:50%;
+  transition:.25s;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .slider{background:var(--ok)}
+.switch input:checked + .slider::before{transform:translateX(20px)}
+.switch input:focus-visible + .slider{box-shadow:0 0 0 3px rgba(245,158,11,.35)}

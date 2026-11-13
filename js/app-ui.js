@@ -1,23 +1,29 @@
 /* ==== Lightbox ==== */
 $('lb').onclick = () => ovClose('lb');
 
-/* ==== Çıkış yardımcıları ==== */
-function showLogoutConfirm(){
+/* ==== Yardımcı: pending özet HTML ==== */
+function pendingSummaryHTML(){
   const a = pending.added.length;
   const e = pending.edited.length;
   const d = pending.deleted.length;
-  const total = a + e + d;
-
+  const ic = pending.images.size;
+  const di = pending.deletedImages.size;
   const rows = [];
-  if(a) rows.push(`<div class="ps-row plus"><span>Eklenen</span><b>+${a}</b></div>`);
-  if(e) rows.push(`<div class="ps-row edit"><span>Düzenlenen</span><b>~${e}</b></div>`);
-  if(d) rows.push(`<div class="ps-row del"><span>Silinen</span><b>-${d}</b></div>`);
+  if(a) rows.push(`<div class="ps-row plus"><span>Eklenen ürün</span><b>+${a}</b></div>`);
+  if(e) rows.push(`<div class="ps-row edit"><span>Düzenlenen ürün</span><b>~${e}</b></div>`);
+  if(d) rows.push(`<div class="ps-row del"><span>Silinen ürün</span><b>-${d}</b></div>`);
+  if(ic) rows.push(`<div class="ps-row img"><span>Yeni resim</span><b>${ic}</b></div>`);
+  if(di) rows.push(`<div class="ps-row del"><span>Silinecek resim</span><b>${di}</b></div>`);
+  return rows.join('');
+}
 
-  $('confirmList').innerHTML = rows.join('');
+/* ==== Çıkış uyarısı ==== */
+function showLogoutConfirm(){
+  const total = pendingCount();
+  $('confirmList').innerHTML = pendingSummaryHTML();
   $('confirmMsg').textContent = `${total} değişiklik henüz yayınlanmadı. Çıkarsan bu değişiklikler kaybolur.`;
   openOv('confirmOv');
 }
-
 function doLogout(){
   costs = null; PW = ''; ghToken = '';
   try { sessionStorage.removeItem(ADMIN_PW_KEY); } catch(_){}
@@ -27,6 +33,14 @@ function doLogout(){
   pending.images.clear(); pending.deletedImages.clear();
   pending.added.length = 0; pending.edited.length = 0; pending.deleted.length = 0;
   setAdmin(false); toast('Çıkış yapıldı');
+}
+
+/* ==== Yayınla onay ekranı ==== */
+function showPublishConfirm(){
+  if(!hasPending()) return;
+  $('publishList').innerHTML = pendingSummaryHTML();
+  $('publishMsg').textContent = pendingCount() + ' ürün + dosya değişikliği GitHub\'a gönderilecek.';
+  openOv('publishOv');
 }
 
 /* ==== Yönetici giriş / çıkış ==== */
@@ -50,6 +64,12 @@ $('confirmNo').onclick = () => closeOv('confirmOv');
 $('confirmYes').onclick = () => { closeOv('confirmOv'); doLogout(); };
 $('confirmOv').onclick = e => { if(e.target.id === 'confirmOv') closeOv('confirmOv'); };
 
+/* ==== Yayın onay modalı ==== */
+$('publishBtn').onclick = showPublishConfirm;
+$('publishNo').onclick = () => closeOv('publishOv');
+$('publishYes').onclick = async () => { closeOv('publishOv'); await publish(); };
+$('publishOv').onclick = e => { if(e.target.id === 'publishOv') closeOv('publishOv'); };
+
 /* ==== Sepet paneli ==== */
 const openCart = () => { drawCart(); openOv('cov'); ovPush('cov'); };
 $('fopen').onclick = openCart;
@@ -59,11 +79,9 @@ document.onkeydown = e => { if(e.key === 'Escape'){
   if($('lb').classList.contains('show')){ ovClose('lb'); return; }
   if($('cov').classList.contains('show')){ ovClose('cov'); return; }
   if($('confirmOv').classList.contains('show')){ closeOv('confirmOv'); return; }
+  if($('publishOv').classList.contains('show')){ closeOv('publishOv'); return; }
   closeOv('lov'); closeOv('eov'); $('dd').classList.remove('open');
 } };
-
-/* ==== Yayınla ==== */
-$('publishBtn').onclick = publish;
 
 /* ==== Sayfadan çıkış uyarısı ==== */
 window.addEventListener('beforeunload', (e) => {

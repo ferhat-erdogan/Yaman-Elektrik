@@ -2,7 +2,7 @@
 // - Sayfa, JSON, CSS ve scriptler: önce ağ (fiyatlar hep güncel), internet yoksa önbellek
 // - Ürün resimleri (img/): önbellekten hemen göster, arkada güncelle
 // - api.php ve POST istekleri: karışmaz
-const V = 'yaman-v4', IMG = 'yaman-img-v1', MAX_IMG = 400;
+const V = 'yaman-v5', IMG = 'yaman-img-v1', MAX_IMG = 400;
 const SCOPE = self.registration.scope;
 const SHELL = ['./', 'index.html', 'css/style.css',
   'js/app-config.js', 'js/app-state.js', 'js/app-github.js',

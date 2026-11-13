@@ -48,6 +48,8 @@ function updateCartAmounts(){
   }
 }
 function add(id, d){
+  const p = P[id];
+  if(p && p.stok === 'yok'){ toast('Bu ürün stokta yok'); return; }
   cart[id] = r2((cart[id]||0)+d);
   if(cart[id] <= 0){ delete cart[id]; delete cartSel[id]; }
   else if(cartSel[id] === undefined) cartSel[id] = true;
@@ -66,10 +68,11 @@ function drawCart(){
   $('cb').innerHTML = E.length ? E.map(([id,n])=>{
     const p = P[id];
     const selected = isSel(id);
-    return `<div class="ci${selected?'':' off'}" data-id="${id}">
+    const oos = p.stok === 'yok';
+    return `<div class="ci${selected?'':' off'}${oos?' oos':''}" data-id="${id}">
       <label class="selbox"><input type="checkbox" ${selected?'checked':''} onchange="toggleSel(${id})"></label>
       <div class="im${p.resim?' z':''}" ${p.resim?`onclick="zoom(${id})"`:''}>${img(p)}</div>
-      <div class="info"><b>${esc(p.ad)}</b><small>${TL(p.satis)} / ${unit(p)}</small></div>
+      <div class="info"><b>${esc(p.ad)}${oos?'<span class="oos-tag">STOK YOK</span>':''}</b><small>${TL(p.satis)} / ${unit(p)}</small></div>
       <button class="del" onclick="removeItem(${id})" aria-label="Sepetten çıkar">${TRASH_ICON}</button>
       <div class="ctrl">${qctl(p, n, 'q')}<span class="line-tot">${TL(p.satis*n)}</span></div>
     </div>`;
@@ -116,12 +119,14 @@ function render(){
   $('grid').innerHTML = L.length ? L.slice(0,shown).map(p=>{
     const n = cart[p.id], c = costs && costs[p.id];
     const isDirty = pending.added.some(x => x.id === p.id) || pending.edited.some(x => x.id === p.id);
-    return `<div class="card${isDirty?' dirty':''}"><div class="ph${p.resim?' z':''}" ${p.resim?`onclick="zoom(${p.id})"`:''}>${BOX}${img(p)}${p.kat?`<span class="tag" data-k="${esc(p.kat)}" onclick="event.stopPropagation();pickCat(this.dataset.k)">${esc(p.kat)}</span>`:''}</div>
+    const oos = p.stok === 'yok';
+    return `<div class="card${isDirty?' dirty':''}${oos?' out-of-stock':''}"><div class="ph${p.resim?' z':''}" ${p.resim?`onclick="zoom(${p.id})"`:''}>${oos?'<span class="oos-badge">STOK YOK</span>':''}${BOX}${img(p)}${p.kat?`<span class="tag" data-k="${esc(p.kat)}" onclick="event.stopPropagation();pickCat(this.dataset.k)">${esc(p.kat)}</span>`:''}</div>
     <div class="bd"><div class="nm">${esc(p.ad)}</div><div class="pr">${TL(p.satis)}<span class="u"> / ${unit(p)}</span></div>
     ${costs?`<div class="adm"><span>Alış: ${TL(c)}</span><span>Kâr: <b>${TL(p.satis-c)}</b>${c?` (%${Math.round((p.satis-c)/c*100)})`:''}</span></div>`:''}
     ${(costs&&ghToken)?`<button class="btn ed" onclick="edit(${p.id})">Düzenle</button>`:''}
-    ${n?qctl(p,n,'step')
-       :`<button class="add" onclick="add(${p.id},1)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sepete ekle</button>`}
+    ${oos?`<button class="add" disabled style="opacity:.5;cursor:not-allowed;background:var(--bd);color:var(--mut)">Stokta yok</button>`
+       :(n?qctl(p,n,'step')
+         :`<button class="add" onclick="add(${p.id},1)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sepete ekle</button>`)}
     <button class="share-p" onclick="shareProduct(${p.id})">${SHARE_ICON}Ürünü Paylaş</button>
     </div></div>`}).join('') : `<div class="empty">${BOX}<div>Ürün bulunamadı</div></div>`;
   watch();
