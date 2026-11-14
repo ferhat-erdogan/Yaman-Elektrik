@@ -59,7 +59,7 @@ async function shareProduct(id){
     glow.addColorStop(0, 'rgba(245,158,11,0.16)'); glow.addColorStop(1, 'rgba(245,158,11,0)');
     ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
 
-    const IMG_W = W - PAD*2, IMG_H = 620, IMG_Y = PAD + 20, R = 28;
+    const IMG_W = W - PAD*2, IMG_H = 560, IMG_Y = PAD + 20, R = 28;
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 24;
     roundRectPath(ctx, PAD, IMG_Y, IMG_W, IMG_H, R);
@@ -78,14 +78,15 @@ async function shareProduct(id){
     ctx.textBaseline = 'top'; ctx.textAlign = 'left';
     ctx.fillStyle = '#ffffff';
     ctx.font = '600 42px system-ui, -apple-system, "Segoe UI", sans-serif';
-    const TX = PAD + 10, TW = W - PAD*2 - 20, ny = IMG_Y + IMG_H + 75;
-    const nameEnd = wrapText(ctx, p.ad, TX, ny, TW, 54);
+    const TX = PAD + 10, TW = W - PAD*2 - 20;
+    const ny = IMG_Y + IMG_H + 55;
+    const nameEnd = wrapText(ctx, p.ad, TX, ny, TW, 50);
 
-    const py = nameEnd + 75;
+    const py = nameEnd + 60;
     const priceGrad = ctx.createLinearGradient(TX, py, TX + 700, py + 80);
     priceGrad.addColorStop(0, '#fbbf24'); priceGrad.addColorStop(0.5, '#f59e0b'); priceGrad.addColorStop(1, '#b45309');
     ctx.fillStyle = priceGrad;
-    ctx.font = '800 92px system-ui, -apple-system, "Segoe UI", sans-serif';
+    ctx.font = '800 84px system-ui, -apple-system, "Segoe UI", sans-serif';
     ctx.fillText(TL(p.satis) + ' / ' + unit(p), TX, py);
 
     const BAND_H = 130, BAND_Y = H - BAND_H;

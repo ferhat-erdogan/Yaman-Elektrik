@@ -26,25 +26,29 @@ const pending = {
   deletedImages: new Set(),
   added: [],
   edited: [],
-  deleted: []
+  deleted: [],
+  stokChanged: new Set()   // stok adedi değişen ürün id'leri
 };
 function hasPending(){
   return pending.products || pending.costs || pending.images.size > 0 || pending.deletedImages.size > 0;
 }
 function pendingCount(){
-  return pending.added.length + pending.edited.length + pending.deleted.length;
+  return pending.added.length + pending.edited.length + pending.deleted.length + pending.stokChanged.size;
 }
 function buildCommitMessage(){
   const a = pending.added.length, e = pending.edited.length, d = pending.deleted.length;
+  const sc = pending.stokChanged.size;
   const parts = [];
   if(a) parts.push('+' + a);
   if(e) parts.push('~' + e);
   if(d) parts.push('-' + d);
+  if(sc) parts.push('stok:' + sc);
   const title = (parts.join(' ') || '0') + ' ürün';
   let body = '';
   if(a) body += 'Eklenen:\n' + pending.added.map(x => '- ' + x.ad).join('\n') + '\n';
   if(e) body += (body ? '\n' : '') + 'Düzenlenen:\n' + pending.edited.map(x => '- ' + x.ad).join('\n') + '\n';
   if(d) body += (body ? '\n' : '') + 'Silinen:\n' + pending.deleted.map(x => '- ' + x.ad).join('\n');
+  if(sc) body += (body ? '\n' : '') + 'Stok değişenler:\n' + [...pending.stokChanged].map(id => '- ' + ((P[id] && P[id].ad) || ('#' + id))).join('\n');
   return body ? title + '\n\n' + body : title;
 }
 function updatePublishUI(){
@@ -69,8 +73,8 @@ function updatePublishUI(){
       bar.innerHTML = `<b>${n}</b> bekleyen değişiklik · <b>Yayınla</b> butonuna bas → GitHub'a gönderilsin`;
     } else {
       bar.innerHTML = ghToken
-        ? 'Yönetici modu · <b>yazma yetkili</b> (alış fiyatları + ürün düzenleme)'
-        : 'Yönetici modu · <b>sadece okuma</b> (alış fiyatları görünür, düzenleme kapalı)';
+        ? 'Yönetici modu · <b>yazma yetkili</b> (alış fiyatları + stok + ürün düzenleme)'
+        : 'Yönetici modu · <b>sadece okuma</b> (alış fiyatları ve stok görünür, düzenleme kapalı)';
     }
   }
 }

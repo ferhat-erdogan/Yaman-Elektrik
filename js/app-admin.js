@@ -16,16 +16,16 @@ function queueSave(item, imageCanvas){
     }
   }
 
-  const stok = item.stok === 'yok' ? 'yok' : 'var';
+  const stokAdet = Math.max(0, parseInt($('f_stok_adet').value, 10) || 0);
 
   if(item.id === null || item.id === undefined){
     const id = P.length;
-    P.push({ id, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stok });
+    P.push({ id, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stokAdet });
     costs.push(item.alis);
     pending.added.push({ id, ad: item.ad });
   } else {
     const oldId = Number(item.id);
-    P[oldId] = { id: oldId, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stok };
+    P[oldId] = { id: oldId, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stokAdet };
     costs[oldId] = item.alis;
     const aidx = pending.added.findIndex(x => x.id === oldId);
     if(aidx >= 0){
@@ -50,6 +50,9 @@ function queueDelete(id){
   P.splice(id, 1);
   costs.splice(id, 1);
   P = P.map((p, i) => ({ ...p, id: i }));
+
+  // Silme id'leri kaydırdığı için stok değişiklik takibini sıfırla (products.json zaten tümüyle yazılacak)
+  pending.stokChanged.clear();
 
   if(silinenResim.startsWith('img/')){
     pending.deletedImages.add(silinenResim);
@@ -139,6 +142,7 @@ async function publish(){
     pending.products = false; pending.costs = false;
     pending.images.clear(); pending.deletedImages.clear();
     pending.added.length = 0; pending.edited.length = 0; pending.deleted.length = 0;
+    pending.stokChanged.clear();
     updatePublishUI(); render();
     try { sessionStorage.setItem(COSTS_CACHE_KEY, JSON.stringify(costs)); } catch(_){}
     setTimeout(() => {
@@ -150,6 +154,7 @@ async function publish(){
   } catch(e){
     overlay.classList.remove('show');
     bar.style.width = '0';
+    status.textContent = 'Hazırlanıyor…';
     publishBtn.disabled = false;
     console.error(e);
     toast('Yayınlama hatası: ' + (e.message || '').slice(0, 60));
@@ -161,6 +166,7 @@ function setAdmin(on){
   $('lock').classList.toggle('on', on);
   $('lockt').textContent = on ? 'Çıkış' : 'Giriş';
   $('newb').style.display = (on && ghToken) ? '' : 'none';
+  drawSort();
   updatePublishUI();
   render();
 }
@@ -189,12 +195,13 @@ async function doLogin(){
   $('lok').disabled = false; $('lok').textContent = 'Giriş yap';
 }
 
-/* ==== Stok toggle güncelleyici ==== */
-function setStockToggleUI(isVar){
-  $('f_stok').checked = isVar;
-  $('f_stok_label').textContent = isVar ? 'Stokta var' : 'Stokta yok';
-  const tgl = document.querySelector('.stock-toggle');
-  if(tgl) tgl.classList.toggle('off', !isVar);
+/* ==== Stok form yardımcıları ==== */
+function setStokAdetUI(adet){
+  $('f_stok_adet').value = Math.max(0, parseInt(adet, 10) || 0);
+}
+function stokFormAdj(d){
+  const el = $('f_stok_adet');
+  el.value = Math.max(0, (parseInt(el.value, 10) || 0) + d);
 }
 
 /* ==== Ürün düzenleme ==== */
@@ -202,12 +209,12 @@ let editId = null, delArm = false;
 function edit(id){
   if(!ghToken){ toast('Düzenleme için GitHub token gerekli'); return; }
   editId = id; delArm = false;
-  const p = (id === null) ? {ad:'',satis:'',resim:'',kat:'',stok:'var'} : P[id];
+  const p = (id === null) ? {ad:'',satis:'',resim:'',kat:'',stokAdet:0} : P[id];
   $('etitle').textContent = (id === null) ? 'Yeni ürün' : 'Ürünü düzenle';
   $('f_ad').value = p.ad || '';
   $('f_alis').value = (id === null) ? '' : (costs ? costs[id] : '');
   $('f_satis').value = p.satis || '';
-  setStockToggleUI(p.stok !== 'yok');
+  setStokAdetUI(id === null ? 0 : stokOf(p));
   $('f_resim_file').value = '';
 
   const prev = $('f_resim_prev');
@@ -236,14 +243,6 @@ function drawKch(){
     : '<small>Henüz kategori yok, yukarıya yazarak oluştur.</small>';
 }
 
-/* ==== Stok toggle onchange ==== */
-$('f_stok').onchange = () => {
-  const on = $('f_stok').checked;
-  $('f_stok_label').textContent = on ? 'Stokta var' : 'Stokta yok';
-  const tgl = document.querySelector('.stock-toggle');
-  if(tgl) tgl.classList.toggle('off', !on);
-};
-
 /* ==== Admin event'leri ==== */
 $('kch').onclick = e => { const b = e.target.closest('.chip'); if(!b) return; $('f_kat').value = b.dataset.k; drawKch(); };
 $('f_kat').oninput = drawKch;
@@ -256,8 +255,7 @@ $('esave').onclick = async () => {
     alis: parseFloat(String($('f_alis').value).replace(',', '.')) || 0,
     satis: parseFloat(String($('f_satis').value).replace(',', '.')) || 0,
     resim: (editId !== null && P[editId]) ? (P[editId].resim || '') : '',
-    kat: $('f_kat').value.trim(),
-    stok: $('f_stok').checked ? 'var' : 'yok'
+    kat: $('f_kat').value.trim()
   };
   if(!item.ad){ $('eerr').textContent = 'Ürün adı gerekli.'; return; }
   if(!item.kat){ $('eerr').textContent = 'Kategori seçmek zorunlu.'; $('f_kat').classList.add('bad'); return; }

@@ -6,16 +6,43 @@ function pendingSummaryHTML(){
   const a = pending.added.length;
   const e = pending.edited.length;
   const d = pending.deleted.length;
+  const sc = pending.stokChanged.size;
   const ic = pending.images.size;
   const di = pending.deletedImages.size;
   const rows = [];
   if(a) rows.push(`<div class="ps-row plus"><span>Eklenen ürün</span><b>+${a}</b></div>`);
   if(e) rows.push(`<div class="ps-row edit"><span>Düzenlenen ürün</span><b>~${e}</b></div>`);
   if(d) rows.push(`<div class="ps-row del"><span>Silinen ürün</span><b>-${d}</b></div>`);
+  if(sc) rows.push(`<div class="ps-row stok"><span>Stok değişikliği</span><b>${sc}</b></div>`);
   if(ic) rows.push(`<div class="ps-row img"><span>Yeni resim</span><b>${ic}</b></div>`);
-  if(di) rows.push(`<div class="ps-row del"><span>Silinecek resim</span><b>${di}</b></div>`);
+  if(di) rows.push(`<div class="ps-row img"><span>Silinecek resim</span><b>${di}</b></div>`);
   return rows.join('');
 }
+
+/* ==== Genel onay modalı ==== */
+let _scOnOk = null;
+function showConfirm(opts){
+  opts = opts || {};
+  $('scTitle').textContent = opts.title || 'Onay';
+  $('scMsg').textContent = opts.msg || '';
+  $('scList').innerHTML = (opts.list || []).map(t => `<div class="sl-row">${esc(t)}</div>`).join('');
+  const yes = $('scYes');
+  yes.textContent = opts.okText || 'Onayla';
+  yes.className = 'btn ' + (opts.okColor === 'err' ? 'danger' : opts.okColor === 'ok' ? 'succ' : 'p');
+  const mic = $('scMic');
+  mic.className = 'mic ' + (opts.okColor === 'err' ? 'warn-mic' : opts.okColor === 'ok' ? 'succ-mic' : 'pub-mic');
+  _scOnOk = opts.onOk || null;
+  openOv('stokConfirmOv');
+}
+$('scNo').onclick = () => { _scOnOk = null; closeOv('stokConfirmOv'); };
+$('scYes').onclick = () => {
+  const cb = _scOnOk; _scOnOk = null;
+  closeOv('stokConfirmOv');
+  if(cb) try { cb(); } catch(e){ console.error(e); toast('İşlem hatası'); }
+};
+$('stokConfirmOv').onclick = e => {
+  if(e.target.id === 'stokConfirmOv'){ _scOnOk = null; closeOv('stokConfirmOv'); }
+};
 
 /* ==== Çıkış uyarısı ==== */
 function showLogoutConfirm(){
@@ -32,6 +59,8 @@ function doLogout(){
   pending.products = pending.costs = false;
   pending.images.clear(); pending.deletedImages.clear();
   pending.added.length = 0; pending.edited.length = 0; pending.deleted.length = 0;
+  pending.stokChanged.clear();
+  if(sort.startsWith('stok')){ sort = 'new'; }
   setAdmin(false); toast('Çıkış yapıldı');
 }
 
@@ -77,6 +106,7 @@ $('cx').onclick = () => ovClose('cov');
 $('cov').onclick = e => { if(e.target.id === 'cov') ovClose('cov'); };
 document.onkeydown = e => { if(e.key === 'Escape'){
   if($('lb').classList.contains('show')){ ovClose('lb'); return; }
+  if($('stokConfirmOv').classList.contains('show')){ _scOnOk = null; closeOv('stokConfirmOv'); return; }
   if($('cov').classList.contains('show')){ ovClose('cov'); return; }
   if($('confirmOv').classList.contains('show')){ closeOv('confirmOv'); return; }
   if($('publishOv').classList.contains('show')){ closeOv('publishOv'); return; }
@@ -109,6 +139,14 @@ document.addEventListener('click', () => $('dd').classList.remove('open'));
 async function init(){
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
   try { P = await (await fetch('products.json?' + Date.now())).json(); } catch(e){ P = []; }
+  // Migration: eski "stok: var/yok" → "stokAdet: 1/0" (bellekte)
+  P = P.map(p => {
+    if(p.stokAdet === undefined){
+      const { stok, ...rest } = p;
+      return { ...rest, stokAdet: stok === 'yok' ? 0 : 1 };
+    }
+    return p;
+  });
   drawChips(); drawSort(); render(); sum();
   updatePublishUI();
 

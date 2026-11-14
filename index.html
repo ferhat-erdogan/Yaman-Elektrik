@@ -57,7 +57,7 @@
 
 <div class="ov" id="lov"><div class="modal">
   <div class="mic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-  <h3>Yönetici girişi</h3><p>Parola ile alış fiyatlarını gör. Token eklersen ürün düzenleme de açılır.</p>
+  <h3>Yönetici girişi</h3><p>Parola ile alış fiyatlarını ve stok adetlerini gör. Token eklersen ürün düzenleme de açılır.</p>
   <div class="fld"><label for="pw">Parola</label><input id="pw" type="password" placeholder="Parola" autocomplete="current-password"></div>
   <div class="fld"><label for="gh_token">GitHub Token (opsiyonel)</label><input id="gh_token" type="password" placeholder="github_pat_…" autocomplete="off"><small>Ürün ekleme / düzenleme için gerekli</small></div>
   <div class="err" id="err"></div>
@@ -80,37 +80,69 @@
   <div class="mb"><button class="btn" id="publishNo">Vazgeç</button><button class="btn p" id="publishYes">Yayınla</button></div>
 </div></div>
 
+<div class="ov" id="stokConfirmOv"><div class="modal">
+  <div class="mic" id="scMic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+  <h3 id="scTitle">Onay</h3>
+  <p id="scMsg"></p>
+  <div class="stok-list" id="scList"></div>
+  <div class="mb">
+    <button class="btn" id="scNo">Vazgeç</button>
+    <button class="btn p" id="scYes">Onayla</button>
+  </div>
+</div></div>
+
 <div class="ov" id="lb"><button class="x" aria-label="Kapat"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <div class="lbw"><img id="lbi" alt=""><div class="cap"><b id="lbn"></b><span id="lbp"></span><br><div class="adm2" id="lba"></div></div></div></div>
 
 <div class="ov" id="eov"><div class="modal tall">
-  <h3 id="etitle">Yeni ürün</h3><p>Değişiklik bellekte tutulur, "Yayınla" ile GitHub'a gönderilir.</p>
-  <div class="fld"><label for="f_ad">Ürün adı</label><input id="f_ad" autocomplete="off"></div>
-  <div class="f2">
-    <div class="fld"><label for="f_alis">Alış fiyatı (₺)</label><input id="f_alis" inputmode="decimal"></div>
-    <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal"></div>
-  </div>
-<div class="fld">
-  <label>Stok durumu</label>
-  <label class="stock-toggle" for="f_stok">
-    <div class="stock-info">
-      <b id="f_stok_label">Stokta var</b>
+  <div class="mhead">
+    <div class="mic"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></div>
+    <div class="mhead-txt">
+      <h3 id="etitle">Yeni ürün</h3>
+      <p>Değişiklik bellekte tutulur, "Yayınla" ile GitHub'a gönderilir.</p>
     </div>
-    <span class="switch">
-      <input type="checkbox" id="f_stok" checked>
-      <span class="slider"></span>
-    </span>
-  </label>
-</div>
-      <div class="fld">
-    <label>Ürün resmi</label>
-    <div class="prev-box empty" id="f_resim_prev"></div>
-    <input id="f_resim_file" type="file" accept="image/*">
-    <small>Dosya seç → 800px webp'e dönüştürülüp bellekte tutulur (Yayınla'da GitHub'a gider)</small>
   </div>
-  <div class="fld"><label for="f_kat">Kategori (zorunlu)</label><input id="f_kat" placeholder="Seç veya yeni yaz" autocomplete="off"><div class="kch" id="kch"></div></div>
-  <div class="err" id="eerr"></div>
-  <div class="mb"><button class="btn dg" id="edel">Sil</button><button class="btn" id="ec">Vazgeç</button><button class="btn p" id="esave">Belleğe Kaydet</button></div>
+  <div class="mbody">
+    <div class="fld">
+      <label for="f_ad">Ürün adı</label>
+      <input id="f_ad" autocomplete="off" placeholder="Örn. NYA 2.5mm kablo">
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Fiyatlar</div>
+      <div class="f2">
+        <div class="fld"><label for="f_alis">Alış fiyatı (₺)</label><input id="f_alis" inputmode="decimal" placeholder="0,00"></div>
+        <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal" placeholder="0,00"></div>
+      </div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Stok</div>
+      <div class="fld">
+        <label for="f_stok_adet">Stok adedi</label>
+        <div class="stock-edit">
+          <button type="button" class="stock-btn" onclick="stokFormAdj(-1)">−</button>
+          <input id="f_stok_adet" inputmode="numeric" value="0" autocomplete="off">
+          <button type="button" class="stock-btn" onclick="stokFormAdj(1)">+</button>
+        </div>
+        <small>0 = stokta yok · normal kullanıcı sepete ekleyemez</small>
+      </div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Görsel & Kategori</div>
+      <div class="fld">
+        <label>Ürün resmi</label>
+        <div class="prev-box empty" id="f_resim_prev"></div>
+        <input id="f_resim_file" type="file" accept="image/*">
+        <small>Dosya seç → 800px webp'e dönüştürülüp bellekte tutulur (Yayınla'da GitHub'a gider)</small>
+      </div>
+      <div class="fld"><label for="f_kat">Kategori (zorunlu)</label><input id="f_kat" placeholder="Seç veya yeni yaz" autocomplete="off"><div class="kch" id="kch"></div></div>
+    </div>
+    <div class="err" id="eerr"></div>
+  </div>
+  <div class="mfoot">
+    <button class="btn dg" id="edel">Sil</button>
+    <button class="btn" id="ec">Vazgeç</button>
+    <button class="btn p" id="esave">Belleğe Kaydet</button>
+  </div>
 </div></div>
 
 <div class="ov" id="cov"><div class="drawer">
