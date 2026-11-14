@@ -112,7 +112,7 @@ async function shareProduct(id){
 
 /* ==== Paylaş & Konum butonları ==== */
 $('shar').onclick = () => {
-  const text = SHARE_NAME + '\n\n' + location.origin + location.pathname;
+  const text = SHARE_NAME + '\n\n' + location.href;
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 };
 $('loc').onclick = () => window.open('https://maps.google.com/?q=' + encodeURIComponent(LOC_QUERY), '_blank');

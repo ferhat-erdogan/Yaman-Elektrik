@@ -189,6 +189,7 @@ $('q').oninput = () => {
   }
   shown = STEP;
   render();
+  updateURL();
 };
 $('chips').onclick = e => { const b = e.target.closest('.chip'); if(!b) return; pickCat(b.dataset.c); };
 $('ddb').onclick = e => { e.stopPropagation(); $('dd').classList.toggle('open'); };
@@ -206,6 +207,21 @@ async function init(){
     }
     return p;
   });
+
+  // ==== URL parametreleri (kategori / arama) ====
+  try {
+    const params = new URLSearchParams(location.search);
+    const katParam = params.get('kategori');
+    const searchParam = params.get('search');
+    if(katParam){
+      // Kategori silinmişse yok say
+      if(P.some(p => p.kat === katParam)) cat = katParam;
+    }
+    if(searchParam){
+      $('q').value = searchParam;
+    }
+  } catch(_){}
+
   drawChips(); drawSort(); render(); sum();
   updatePublishUI();
 

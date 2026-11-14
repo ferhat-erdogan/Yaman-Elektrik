@@ -22,8 +22,17 @@ const SHARE_ICON = '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circ
 const TRASH_ICON = '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
 const WAI = '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5z"/></svg>';
 
-/* ==== Stok yardımcısı — migration dahil ==== */
-// p.stokAdet varsa onu, yoksa eski "stok: var/yok" alanından türet (var→1, yok→0)
+/* ==== URL params (kategori / arama) ==== */
+function updateURL(){
+  const u = new URL(location.href);
+  u.search = '';
+  if(typeof cat === 'string' && cat) u.searchParams.set('kategori', cat);
+  const qv = (typeof $ === 'function' && $('q')) ? $('q').value.trim() : '';
+  if(qv) u.searchParams.set('search', qv);
+  try { history.replaceState(null, '', u.href); } catch(_){}
+}
+
+/* ==== Stok yardımcısı ==== */
 const stokOf = p => p && typeof p.stokAdet === 'number'
   ? p.stokAdet
   : (p && p.stok === 'yok' ? 0 : 1);
@@ -33,7 +42,6 @@ const SORTS = {
   az:['Ada göre (A-Z)',(a,b)=>a.ad.localeCompare(b.ad,'tr')],
   lo:['Fiyat: düşükten yükseğe',(a,b)=>a.satis-b.satis],
   hi:['Fiyat: yüksekten düşüğe',(a,b)=>b.satis-a.satis],
-  // Yalnızca admin dropdown'unda görünür (drawSort filtreler)
   stokAz:['Stok: düşükten yükseğe',(a,b)=>stokOf(a)-stokOf(b)],
   stokCok:['Stok: yüksekten düşüğe',(a,b)=>stokOf(b)-stokOf(a)]
 };

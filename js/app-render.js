@@ -21,7 +21,6 @@ function setQtyLive(id, v, el){
   if(el){
     const len = String(el.value || '1').length || 1;
     el.size = Math.max(1, Math.min(8, len));
-    // Görsel geri bildirim — "kaydedildi" hissi
     el.classList.add('saved');
     clearTimeout(el._sv);
     el._sv = setTimeout(() => el.classList.remove('saved'), 350);
@@ -250,6 +249,7 @@ function pickCat(k){
   drawChips(); render();
   const on = $('chips').querySelector('.chip.on'); if(on) on.scrollIntoView({inline:'center', block:'nearest'});
   scrollTo(0, 0); $('q').blur();
+  updateURL();
 }
 function zoom(id){
   const p = P[id]; if(!p || !p.resim) return;
