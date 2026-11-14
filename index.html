@@ -57,9 +57,9 @@
 
 <div class="ov" id="lov"><div class="modal">
   <div class="mic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-  <h3>Yönetici girişi</h3>
+  <h3>Yönetici girişi</h3><p>Parola ile alış fiyatlarını ve stok adetlerini gör. Token eklersen ürün düzenleme de açılır.</p>
   <div class="fld"><label for="pw">Parola</label><input id="pw" type="password" placeholder="Parola" autocomplete="current-password"></div>
-  <div class="fld"><label for="gh_token">GitHub Token (opsiyonel)</label><input id="gh_token" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+  <div class="fld"><label for="gh_token">GitHub Token (opsiyonel)</label><input id="gh_token" type="password" placeholder="github_pat_…" autocomplete="off"><small>Ürün ekleme / düzenleme için gerekli</small></div>
   <div class="err" id="err"></div>
   <div class="mb"><button class="btn" id="lc">Vazgeç</button><button class="btn p" id="lok">Giriş yap</button></div>
 </div></div>
@@ -88,6 +88,21 @@
   <div class="mb">
     <button class="btn" id="scNo">Vazgeç</button>
     <button class="btn p" id="scYes">Onayla</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ozetOv"><div class="modal wide">
+  <div class="mhead">
+    <div class="mic pub-mic"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <div class="mhead-txt">
+      <h3>Stok Değeri</h3>
+      <p>Kategori bazlı envanter değerlemesi</p>
+    </div>
+  </div>
+  <div class="mbody" id="ozetCat"></div>
+  <div class="ozet-summary" id="ozetSum"></div>
+  <div class="mfoot">
+    <button class="btn" onclick="closeOv('ozetOv')">Kapat</button>
   </div>
 </div></div>
 
@@ -167,5 +182,5 @@
 <script src="js/app-admin.js"></script>
 <script src="js/app-share.js"></script>
 <script src="js/app-ui.js"></script>
-</body> 
+</body>
 </html>

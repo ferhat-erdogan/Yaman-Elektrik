@@ -113,7 +113,7 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .btn.wa:hover{background:#1ebe5b}
 .ph.z{cursor:zoom-in}
 
-/* LIGHTBOX — #cov'un üstünde olmalı */
+/* LIGHTBOX */
 #lb{background:rgba(2,6,23,.92);cursor:zoom-out;z-index:60}
 #lb .lbw{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
 #lb img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#fff}
@@ -141,7 +141,7 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .qi::-webkit-outer-spin-button,.qi::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .step .qi{flex:1;min-width:44px;padding:0 2px}
 .step .qi:focus, .q .qi:focus { background: rgba(245,158,11,.15); border-radius: 4px; }
-.qi.saved { background: rgba(22,163,74,.2); border-radius: 4px; transition: background .15s; } 
+.qi.saved { background: rgba(22,163,74,.2); border-radius: 4px; transition: background .15s; }
 
 .ci .ctrl .q{display:inline-flex;align-items:center;border:1px solid var(--bd);border-radius:9px;overflow:hidden;flex:none;gap:0;height:30px;padding:0}
 .ci .ctrl .q button{width:24px;height:100%;font-size:15px;line-height:1;flex:none;color:var(--tx);display:inline-flex;align-items:center;justify-content:center;padding:0;margin:0}
@@ -171,7 +171,7 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .btn.succ:hover{background:#15803d;border-color:#15803d}
 .btn:disabled{opacity:.6;cursor:wait}
 
-/* TALL MODAL (eov) — flex, sticky footer, bölüm başlıkları */
+/* TALL MODAL (eov) */
 .modal.tall{display:flex;flex-direction:column;padding:0;width:min(460px,calc(100% - 20px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
 .mhead{display:flex;align-items:flex-start;gap:14px;padding:20px 22px 6px;flex:none}
 .mhead .mic{margin-bottom:0;flex:none}
@@ -195,6 +195,30 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
   .mfoot .btn{height:44px;font-size:14px;padding:0 8px}
 }
 
+/* WIDE MODAL (ozet) */
+.modal.wide{display:flex;flex-direction:column;padding:0;width:min(560px,calc(100% - 20px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+.ozet-summary{padding:14px 22px;border-top:1px solid var(--bd);background:var(--bg);flex:none;border-radius:0}
+.ozet-summary .osum-row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;font-size:13px;color:var(--mut)}
+.ozet-summary .osum-row b{font-weight:800;font-size:15px;color:var(--tx);letter-spacing:-.2px}
+.ozet-summary .osum-row.big b{font-size:16px}
+.ozet-summary .osum-row.ok b{color:var(--ok)}
+.ozet-summary .osum-meta{font-size:11.5px;color:var(--mut);margin-top:6px;line-height:1.4}
+.ozet-cat{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--bg)}
+.ozet-cat:last-child{margin-bottom:0}
+.ozet-cat .oc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.ozet-cat .oc-head b{font-size:14px;font-weight:700}
+.ozet-cat .oc-head span{font-size:11.5px;color:var(--mut)}
+.ozet-cat .oc-rows{display:grid;gap:4px;font-size:12.5px}
+.ozet-cat .oc-rows > div{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ozet-cat .oc-rows span{color:var(--mut)}
+.ozet-cat .oc-rows b{font-weight:700;color:var(--tx)}
+.ozet-cat .oc-rows b.ok{color:var(--ok)}
+.ozet-cat .oc-rows em{font-style:normal;font-size:11px;color:var(--mut);font-weight:600;margin-left:auto}
+@media(max-width:520px){
+  .modal.wide{width:calc(100% - 14px);max-height:calc(100vh - 14px);max-height:calc(100dvh - 14px)}
+  .ozet-summary{padding:12px 18px}
+}
+
 /* STOK CONFIRM MODAL */
 #stokConfirmOv{z-index:55}
 .stok-list{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:6px 14px;margin:0 0 14px;max-height:220px;overflow-y:auto;font-size:13.5px}
@@ -203,7 +227,7 @@ header{background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);color:#fff;pos
 .stok-list:empty{display:none}
 .succ-mic{background:rgba(22,163,74,.15);color:var(--ok)}
 
-/* DRAWER (sepet) */
+/* DRAWER */
 .drawer{position:absolute;inset:0;background:var(--card);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s}
 .ov.in .drawer{transform:none}
 .dh{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--bd);padding-top:calc(16px + env(safe-area-inset-top))}
@@ -289,7 +313,7 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
 .stok-btns .btn.ekle{background:var(--ok);color:#fff;border-color:var(--ok)}
 .stok-btns .btn.ekle:hover{background:#15803d;border-color:#15803d}
 
-/* Sepeti temizle — şık buton */
+/* Sepeti temizle */
 .btn.temizle{display:flex;align-items:center;justify-content:center;gap:7px;height:40px;background:transparent;border:1px dashed rgba(220,38,38,.4);color:var(--err);font-size:13px;font-weight:600;margin-top:6px;border-radius:12px;transition:.15s}
 .btn.temizle:hover{background:rgba(220,38,38,.08);border-color:var(--err);border-style:solid}
 .btn.temizle svg{width:15px;height:15px;stroke-width:2.2}

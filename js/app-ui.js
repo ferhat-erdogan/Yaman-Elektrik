@@ -44,6 +44,54 @@ $('stokConfirmOv').onclick = e => {
   if(e.target.id === 'stokConfirmOv'){ _scOnOk = null; closeOv('stokConfirmOv'); }
 };
 
+/* ==== Stok değeri özeti (#ozet) ==== */
+function openOzet(){
+  if(!costs) return;
+  const byCat = {};
+  let totAlis = 0, totSatis = 0, totStok = 0, totUrun = 0, totOos = 0, eksikAlis = 0;
+  P.forEach(p => {
+    const st = stokOf(p);
+    const alis = costs[p.id] || 0;
+    const satis = p.satis || 0;
+    const kat = p.kat || 'Diğer';
+    if(!byCat[kat]) byCat[kat] = { adet: 0, urun: 0, alis: 0, satis: 0 };
+    const c = byCat[kat];
+    c.adet += st;
+    c.urun += 1;
+    c.alis += alis * st;
+    c.satis += satis * st;
+    totAlis += alis * st;
+    totSatis += satis * st;
+    totStok += st;
+    totUrun += 1;
+    if(st <= 0) totOos++;
+    if(alis <= 0 && st > 0) eksikAlis++;
+  });
+  const kar = totSatis - totAlis;
+  const marj = totAlis > 0 ? (kar / totAlis * 100) : 0;
+  const catList = Object.entries(byCat).sort((a,b) => b[1].satis - a[1].satis);
+  $('ozetCat').innerHTML = catList.length ? catList.map(([k, c]) => {
+    const kk = c.satis - c.alis;
+    const mm = c.alis > 0 ? (kk / c.alis * 100) : 0;
+    return `<div class="ozet-cat">
+      <div class="oc-head"><b>${esc(k)}</b><span>${c.urun} ürün · ${fmtQ(c.adet)} adet/mt</span></div>
+      <div class="oc-rows">
+        <div><span>Alış</span><b>${TL(c.alis)}</b></div>
+        <div><span>Satış</span><b>${TL(c.satis)}</b></div>
+        <div><span>Kâr</span><b class="ok">${TL(kk)}</b><em>%${mm.toFixed(1)}</em></div>
+      </div>
+    </div>`;
+  }).join('') : '<div class="empty" style="padding:30px 0">Ürün yok</div>';
+  $('ozetSum').innerHTML = `
+    <div class="osum-row big"><span>Alış Değeri</span><b>${TL(totAlis)}</b></div>
+    <div class="osum-row big"><span>Satış Değeri</span><b>${TL(totSatis)}</b></div>
+    <div class="osum-row big ok"><span>Tahmini Kâr</span><b>${TL(kar)}</b></div>
+    <div class="osum-row"><span>Kâr Marjı</span><b>%${marj.toFixed(1)}</b></div>
+    <div class="osum-meta">${totUrun} ürün · ${fmtQ(totStok)} adet/mt${totOos ? ' · ' + totOos + ' ürün stok yok' : ''}${eksikAlis ? ' · ' + eksikAlis + ' ürün alış eksik' : ''}</div>
+  `;
+  openOv('ozetOv');
+}
+
 /* ==== Çıkış uyarısı ==== */
 function showLogoutConfirm(){
   const total = pendingCount();
@@ -106,6 +154,7 @@ $('cx').onclick = () => ovClose('cov');
 $('cov').onclick = e => { if(e.target.id === 'cov') ovClose('cov'); };
 document.onkeydown = e => { if(e.key === 'Escape'){
   if($('lb').classList.contains('show')){ ovClose('lb'); return; }
+  if($('ozetOv').classList.contains('show')){ closeOv('ozetOv'); return; }
   if($('stokConfirmOv').classList.contains('show')){ _scOnOk = null; closeOv('stokConfirmOv'); return; }
   if($('cov').classList.contains('show')){ ovClose('cov'); return; }
   if($('confirmOv').classList.contains('show')){ closeOv('confirmOv'); return; }
@@ -129,7 +178,18 @@ addEventListener('scroll', () => $('top').classList.toggle('show', scrollY > 500
 $('top').onclick = () => scrollTo({top:0, behavior:'instant'});
 
 /* ==== Arama, chip, sıralama ==== */
-$('q').oninput = () => { shown = STEP; render(); };
+$('q').oninput = () => {
+  const v = $('q').value.trim().toLowerCase();
+  if(v === '#ozet' && costs){
+    $('q').value = '';
+    shown = STEP;
+    render();
+    openOzet();
+    return;
+  }
+  shown = STEP;
+  render();
+};
 $('chips').onclick = e => { const b = e.target.closest('.chip'); if(!b) return; pickCat(b.dataset.c); };
 $('ddb').onclick = e => { e.stopPropagation(); $('dd').classList.toggle('open'); };
 $('ddm').onclick = e => { const b=e.target.closest('button'); if(!b) return; sort=b.dataset.s; shown=STEP; drawSort(); $('dd').classList.remove('open'); render(); };
@@ -139,7 +199,6 @@ document.addEventListener('click', () => $('dd').classList.remove('open'));
 async function init(){
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
   try { P = await (await fetch('products.json?' + Date.now())).json(); } catch(e){ P = []; }
-  // Migration: eski "stok: var/yok" → "stokAdet: 1/0" (bellekte)
   P = P.map(p => {
     if(p.stokAdet === undefined){
       const { stok, ...rest } = p;
