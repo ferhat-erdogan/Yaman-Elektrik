@@ -1,27 +1,30 @@
 /* ==== Sepet kontrol ==== */
 function qctl(p, n, c){
   const mt = isMt(p);
-  let mid;
-  if(mt){
-    const val = fmtQ(n);
-    const len = Math.max(1, String(val).length);
-    const grp = `<input class="qi" inputmode="decimal" value="${val}" size="${len}" style="border:0;background:transparent;text-align:center;padding:0;margin:0;font-size:13px;font-weight:700;line-height:1;color:inherit;font-style:normal;font-variant-numeric:tabular-nums;flex:none;height:100%;width:auto;min-width:0;max-width:70px;-moz-appearance:textfield;box-sizing:content-box" onfocus="this.select()" oninput="setQtyLive(${p.id},this.value,this)" onchange="setQty(${p.id},this.value,this)"><span class="mu" style="font-style:normal;font-size:10px;color:#64748b;margin:0;padding:0 0 0 2px;line-height:1;white-space:nowrap;flex:none;display:inline-flex;align-items:center">mt</span>`;
-    mid = c === 'step'
-      ? `<span style="flex:1;display:inline-flex;align-items:center;justify-content:center;min-width:0;height:100%">${grp}</span>`
-      : grp;
-  } else {
-    mid = `<span>${n} adet</span>`;
-  }
+  const u = mt ? 'mt' : 'adet';
+  const val = mt ? fmtQ(n) : String(Math.round(n));
+  const len = Math.max(1, String(val).length);
+  const mode = mt ? 'decimal' : 'numeric';
+  const inp = `<input class="qi" inputmode="${mode}" value="${val}" size="${len}" style="border:0;background:transparent;text-align:center;padding:0;margin:0;font-size:13px;font-weight:700;line-height:1;color:inherit;font-style:normal;font-variant-numeric:tabular-nums;flex:none;height:100%;width:auto;min-width:0;max-width:70px;-moz-appearance:textfield;box-sizing:content-box" onfocus="this.select()" oninput="setQtyLive(${p.id},this.value,this)" onblur="setQty(${p.id},this.value,this)"><span class="mu" style="font-style:normal;font-size:10px;color:#64748b;margin:0;padding:0 0 0 2px;line-height:1;white-space:nowrap;flex:none;display:inline-flex;align-items:center">${u}</span>`;
+  const mid = c === 'step'
+    ? `<span style="flex:1;display:inline-flex;align-items:center;justify-content:center;min-width:0;height:100%">${inp}</span>`
+    : inp;
   return `<div class="${c}" style="display:inline-flex;align-items:center;gap:0"><button onclick="add(${p.id},-1)">−</button>${mid}<button onclick="add(${p.id},1)">+</button></div>`;
 }
 function setQtyLive(id, v, el){
-  const n = parseFloat(String(v).replace(',', '.'));
+  const p = P[id];
+  let n = parseFloat(String(v).replace(',', '.'));
+  if(p && !isMt(p)) n = Math.round(n);
   if(!(n > 0)){ delete cart[id]; delete cartSel[id]; }
-  else { cart[id] = Math.min(r2(n), 100000); if(cartSel[id] === undefined) cartSel[id] = true; }
+  else { cart[id] = Math.min(n, 100000); if(cartSel[id] === undefined) cartSel[id] = true; }
   save(); saveSel(); sum();
   if(el){
     const len = String(el.value || '1').length || 1;
     el.size = Math.max(1, Math.min(8, len));
+    // Görsel geri bildirim — "kaydedildi" hissi
+    el.classList.add('saved');
+    clearTimeout(el._sv);
+    el._sv = setTimeout(() => el.classList.remove('saved'), 350);
   }
   if($('cov').classList.contains('show')) updateCartAmounts();
 }
