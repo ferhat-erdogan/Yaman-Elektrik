@@ -13,6 +13,17 @@ const LOC_QUERY = 'Çarşı Mahallesi 1818 Sokak No:45/C Şehzadeler Manisa';
 const STEP = 24;
 const MT_CATS = ['kablo','led','boru','bara'];
 
+/* ==== KDV ==== */
+// Alış fiyatları KDV'siz, satış fiyatları KDV dahil girilir.
+// Net kâr = (Satış / KDV_ORAN) - Alış
+const KDV_ORAN = 1.20;
+const netKar = (satis, alis) => satis / KDV_ORAN - alis;
+const karPct = (kar, alis) => alis > 0 ? (kar / alis * 100) : 0;
+const fmtPct = n => {
+  const v = Math.round(n * 10) / 10;
+  return '%' + (Number.isInteger(v) ? v : v.toFixed(1).replace('.', ','));
+};
+
 /* ==== Yardımcı ==== */
 const TL = n => n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺';
 const $ = id => document.getElementById(id);
@@ -22,7 +33,7 @@ const SHARE_ICON = '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circ
 const TRASH_ICON = '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
 const WAI = '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5z"/></svg>';
 
-/* ==== URL params (kategori / arama) ==== */
+/* ==== URL params ==== */
 function updateURL(){
   const u = new URL(location.href);
   u.search = '';

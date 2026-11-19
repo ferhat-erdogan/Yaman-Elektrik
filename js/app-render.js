@@ -57,9 +57,12 @@ function updateCartAmounts(){
   const adm = document.getElementById('cartAdm');
   if(adm && costs){
     const c = E.reduce((t,[i,n])=>t+costs[i]*n,0);
-    const spans = adm.querySelectorAll('span');
-    if(spans[0]) spans[0].textContent = 'Alış toplamı: ' + TL(c);
-    if(spans[1]) spans[1].innerHTML = 'Kâr: <b>' + TL(total()-c) + '</b>';
+    const setT = (k, v) => { const el = adm.querySelector('[data-cart="'+k+'"]'); if(el) el.textContent = v; };
+    setT('alis', TL(c));
+    setT('kar', TL(total()-c));
+    setT('kar-pct', fmtPct(karPct(total()-c, c)));
+    setT('net', TL(netKar(total(), c)));
+    setT('net-pct', fmtPct(karPct(netKar(total(), c), c)));
   }
 }
 function add(id, d){
@@ -99,7 +102,24 @@ function drawCart(){
   const selE = E.filter(([id])=>isSel(id));
   const c = costs && selE.reduce((t,[id,n])=>t+costs[id]*n,0);
   let h = `<div class="tot" id="cartTot"><span>Toplam</span><span>${TL(total())}</span></div>`;
-  if(costs) h += `<div class="adm" id="cartAdm"><span>Alış toplamı: ${TL(c)}</span><span>Kâr: <b>${TL(total()-c)}</b></span></div>`;
+  if(costs) h += `<div class="adm" id="cartAdm">
+    <div class="adm-row">
+      <span class="adm-label">Alış</span>
+      <b class="adm-val" data-cart="alis">${TL(c)}</b>
+      <em class="adm-pct ghost">—</em>
+    </div>
+    <div class="adm-sep"></div>
+    <div class="adm-row">
+      <span class="adm-label">Kâr</span>
+      <b class="adm-val ok" data-cart="kar">${TL(total()-c)}</b>
+      <em class="adm-pct ok" data-cart="kar-pct">${fmtPct(karPct(total()-c, c))}</em>
+    </div>
+    <div class="adm-row">
+      <span class="adm-label">Net Kâr</span>
+      <b class="adm-val net" data-cart="net">${TL(netKar(total(), c))}</b>
+      <em class="adm-pct net" data-cart="net-pct">${fmtPct(karPct(netKar(total(), c), c))}</em>
+    </div>
+  </div>`;
   h += `<button class="btn wa" onclick="shareWA()">${WAI}WhatsApp'ta paylaş</button>`;
   if(PHONE) h += '<button class="btn p" onclick="orderWA()">Siparişi dükkana gönder</button>';
   if(costs) h += '<button class="btn" onclick="adminShareWA()">Sadece Ürün Adları ve Adetleri Paylaş</button>';
@@ -221,12 +241,32 @@ function render(){
     const isDirty = pending.added.some(x => x.id === p.id) || pending.edited.some(x => x.id === p.id) || pending.stokChanged.has(p.id);
     const oos = stokOf(p) <= 0;
     const stokVal = stokOf(p);
+    const karBrut = p.satis - c;
+    const karNet = netKar(p.satis, c);
     return `<div class="card${isDirty?' dirty':''}"><div class="ph${p.resim?' z':''}" ${p.resim?`onclick="zoom(${p.id})"`:''}>${oos?'<span class="oos-badge">STOK YOK</span>':''}${BOX}${img(p)}${p.kat?`<span class="tag" data-k="${esc(p.kat)}" onclick="event.stopPropagation();pickCat(this.dataset.k)">${esc(p.kat)}</span>`:''}</div>
     <div class="bd"><div class="nm">${esc(p.ad)}</div><div class="pr">${TL(p.satis)}<span class="u"> / ${unit(p)}</span></div>
     ${costs?`<div class="adm">
-      <span>Alış: ${TL(c)}</span>
-      <span>Kâr: <b>${TL(p.satis-c)}</b>${c?` (%${Math.round((p.satis-c)/c*100)})`:''}</span>
-      <span class="stok-line ${stokVal <= 0 ? 'zero' : 'ok'}">Stok: ${fmtQ(stokVal)} ${unit(p)}</span>
+      <div class="adm-row">
+        <span class="adm-label">Alış</span>
+        <b class="adm-val">${TL(c)}</b>
+        <em class="adm-pct ghost">—</em>
+      </div>
+      <div class="adm-row">
+        <span class="adm-label">Stok</span>
+        <b class="adm-val ${stokVal <= 0 ? 'zero' : ''}">${fmtQ(stokVal)} ${unit(p)}</b>
+        <em class="adm-pct ${stokVal <= 0 ? 'danger' : 'ghost'}">${stokVal <= 0 ? 'YOK' : '—'}</em>
+      </div>
+      <div class="adm-sep"></div>
+      <div class="adm-row">
+        <span class="adm-label">Kâr</span>
+        <b class="adm-val ok">${TL(karBrut)}</b>
+        <em class="adm-pct ok">${c?fmtPct(karPct(karBrut, c)):'—'}</em>
+      </div>
+      <div class="adm-row">
+        <span class="adm-label">Net</span>
+        <b class="adm-val net">${TL(karNet)}</b>
+        <em class="adm-pct net">${c?fmtPct(karPct(karNet, c)):'—'}</em>
+      </div>
     </div>`:''}
     ${(costs&&ghToken)?`<button class="btn ed" onclick="edit(${p.id})">Düzenle</button>`:''}
     ${(oos && !costs)?`<button class="add" disabled style="opacity:.5;cursor:not-allowed;background:var(--bd);color:var(--mut)">Stokta yok</button>`
@@ -255,7 +295,15 @@ function zoom(id){
   const p = P[id]; if(!p || !p.resim) return;
   $('lbi').src = p.resim; $('lbn').textContent = p.ad; $('lbp').textContent = TL(p.satis) + ' / ' + unit(p);
   const c = costs ? costs[id] : null;
-  const st = costs ? ` · Stok: ${fmtQ(stokOf(p))} ${unit(p)}` : '';
-  $('lba').textContent = c === null ? '' : `Alış: ${TL(c)} · Kâr: ${TL(p.satis - c)}` + (c ? ` (%${Math.round((p.satis - c) / c * 100)})` : '') + st;
+  if(c === null){
+    $('lba').textContent = '';
+  } else {
+    const kb = p.satis - c, kn = netKar(p.satis, c);
+    $('lba').innerHTML =
+      `Alış: ${TL(c)} · ` +
+      `Kâr: ${TL(kb)} <span class="lb-pct ok">${fmtPct(karPct(kb, c))}</span> · ` +
+      `Net: ${TL(kn)} <span class="lb-pct net">${fmtPct(karPct(kn, c))}</span> · ` +
+      `Stok: ${fmtQ(stokOf(p))} ${unit(p)}`;
+  }
   openOv('lb'); ovPush('lb');
 }

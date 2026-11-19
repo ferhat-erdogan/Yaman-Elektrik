@@ -56,37 +56,38 @@ function openOzet(){
     const kat = p.kat || 'Diğer';
     if(!byCat[kat]) byCat[kat] = { adet: 0, urun: 0, alis: 0, satis: 0 };
     const c = byCat[kat];
-    c.adet += st;
-    c.urun += 1;
-    c.alis += alis * st;
-    c.satis += satis * st;
-    totAlis += alis * st;
-    totSatis += satis * st;
-    totStok += st;
-    totUrun += 1;
+    c.adet += st; c.urun += 1;
+    c.alis += alis * st; c.satis += satis * st;
+    totAlis += alis * st; totSatis += satis * st;
+    totStok += st; totUrun += 1;
     if(st <= 0) totOos++;
     if(alis <= 0 && st > 0) eksikAlis++;
   });
   const kar = totSatis - totAlis;
-  const marj = totAlis > 0 ? (kar / totAlis * 100) : 0;
+  const karNet = totSatis / KDV_ORAN - totAlis;
+  const marj = karPct(kar, totAlis);
+  const marjNet = karPct(karNet, totAlis);
   const catList = Object.entries(byCat).sort((a,b) => b[1].satis - a[1].satis);
   $('ozetCat').innerHTML = catList.length ? catList.map(([k, c]) => {
     const kk = c.satis - c.alis;
-    const mm = c.alis > 0 ? (kk / c.alis * 100) : 0;
+    const kkNet = c.satis / KDV_ORAN - c.alis;
+    const mm = karPct(kk, c.alis);
+    const mmNet = karPct(kkNet, c.alis);
     return `<div class="ozet-cat">
       <div class="oc-head"><b>${esc(k)}</b><span>${c.urun} ürün · ${fmtQ(c.adet)} adet/mt</span></div>
       <div class="oc-rows">
-        <div><span>Alış</span><b>${TL(c.alis)}</b></div>
-        <div><span>Satış</span><b>${TL(c.satis)}</b></div>
-        <div><span>Kâr</span><b class="ok">${TL(kk)}</b><em>%${mm.toFixed(1)}</em></div>
+        <div><span>Alış</span><b>${TL(c.alis)}</b><em class="ghost">—</em></div>
+        <div><span>Satış</span><b>${TL(c.satis)}</b><em class="ghost">—</em></div>
+        <div><span>Kâr</span><b class="ok">${TL(kk)}</b><em class="ok">${fmtPct(mm)}</em></div>
+        <div><span>Net Kâr</span><b class="net">${TL(kkNet)}</b><em class="net">${fmtPct(mmNet)}</em></div>
       </div>
     </div>`;
   }).join('') : '<div class="empty" style="padding:30px 0">Ürün yok</div>';
   $('ozetSum').innerHTML = `
-    <div class="osum-row big"><span>Alış Değeri</span><b>${TL(totAlis)}</b></div>
-    <div class="osum-row big"><span>Satış Değeri</span><b>${TL(totSatis)}</b></div>
-    <div class="osum-row big ok"><span>Tahmini Kâr</span><b>${TL(kar)}</b></div>
-    <div class="osum-row"><span>Kâr Marjı</span><b>%${marj.toFixed(1)}</b></div>
+    <div class="osum-row"><span>Alış Değeri</span><b>${TL(totAlis)}</b><em class="ghost">—</em></div>
+    <div class="osum-row"><span>Satış Değeri</span><b>${TL(totSatis)}</b><em class="ghost">KDV dahil</em></div>
+    <div class="osum-row ok"><span>Kâr</span><b>${TL(kar)}</b><em class="ok">${fmtPct(marj)}</em></div>
+    <div class="osum-row net"><span>Net Kâr</span><b>${TL(karNet)}</b><em class="net">${fmtPct(marjNet)}</em></div>
     <div class="osum-meta">${totUrun} ürün · ${fmtQ(totStok)} adet/mt${totOos ? ' · ' + totOos + ' ürün stok yok' : ''}${eksikAlis ? ' · ' + eksikAlis + ' ürün alış eksik' : ''}</div>
   `;
   openOv('ozetOv');
@@ -208,13 +209,11 @@ async function init(){
     return p;
   });
 
-  // ==== URL parametreleri (kategori / arama) ====
   try {
     const params = new URLSearchParams(location.search);
     const katParam = params.get('kategori');
     const searchParam = params.get('search');
     if(katParam){
-      // Kategori silinmişse yok say
       if(P.some(p => p.kat === katParam)) cat = katParam;
     }
     if(searchParam){
