@@ -125,9 +125,17 @@
     <div class="fsec">
       <div class="fsec-title">Fiyatlar</div>
       <div class="f2">
-        <div class="fld"><label for="f_alis">Alış fiyatı (₺)</label><input id="f_alis" inputmode="decimal" placeholder="0,00"></div>
-        <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal" placeholder="0,00"></div>
+        <div class="fld"><label for="f_alis">Alış / liste (₺)</label><input id="f_alis" inputmode="decimal" placeholder="0,00"></div>
+        <div class="fld"><label for="f_iskonto">İskonto (%)</label><input id="f_iskonto" inputmode="decimal" placeholder="0"></div>
       </div>
+      <div class="f2">
+        <div class="fld"><label for="f_satis">Perakende (₺)</label><input id="f_satis" inputmode="decimal" placeholder="0,00"></div>
+        <div class="fld">
+          <label>Hesaplanan alış</label>
+          <div class="calc-alis" id="f_net_alis">0,00 ₺</div>
+        </div>
+      </div>
+      <small style="display:block;margin-top:6px;color:var(--mut);font-size:11.5px;line-height:1.35">İskonto 0/boş ise alış = girilen tutar. İskonto varsa alış = tutar × (1 − iskonto/100).</small>
     </div>
     <div class="fsec">
       <div class="fsec-title">Stok</div>

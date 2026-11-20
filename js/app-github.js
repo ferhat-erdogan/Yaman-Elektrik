@@ -52,7 +52,7 @@ async function ghDelete(path, sha, message){
 }
 
 /* ==== costs şifreleme ==== */
-async function encryptCosts(arr, pw){
+async function encryptCosts(obj, pw){
   if(!(window.crypto && crypto.subtle)){
     throw new Error('Ürün kaydetmek için 127.0.0.1 veya HTTPS adresi gerekli (crypto.subtle yok)');
   }
@@ -60,7 +60,7 @@ async function encryptCosts(arr, pw){
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
   const key = await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'}, km, {name:'AES-GCM',length:256}, false, ['encrypt']);
-  const enc = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, new TextEncoder().encode(JSON.stringify(arr)));
+  const enc = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, new TextEncoder().encode(JSON.stringify(obj)));
   return { s: bytesToB64(salt), i: bytesToB64(iv), d: bytesToB64(new Uint8Array(enc)) };
 }
 async function unlock(pw){
@@ -74,12 +74,12 @@ async function unlock(pw){
       document.head.appendChild(sc);
     });
     await new Promise(r => setTimeout(r, 60));
-    return JSON.parse(globalThis.__fallbackDecrypt(pw, o));
+    return ensureCostsFormat(JSON.parse(globalThis.__fallbackDecrypt(pw, o)));
   }
   const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
   const key = await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(o.s),iterations:200000,hash:'SHA-256'}, km, {name:'AES-GCM',length:256}, false, ['decrypt']);
   const d = await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(o.i)}, key, b64(o.d));
-  return JSON.parse(new TextDecoder().decode(d));
+  return ensureCostsFormat(JSON.parse(new TextDecoder().decode(d)));
 }
 
 /* ==== Resim işleme ==== */

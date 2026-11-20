@@ -51,7 +51,7 @@ function openOzet(){
   let totAlis = 0, totSatis = 0, totStok = 0, totUrun = 0, totOos = 0, eksikAlis = 0;
   P.forEach(p => {
     const st = stokOf(p);
-    const alis = costs[p.id] || 0;
+    const alis = netAlis(p.id);
     const satis = p.satis || 0;
     const kat = p.kat || 'Diğer';
     if(!byCat[kat]) byCat[kat] = { adet: 0, urun: 0, alis: 0, satis: 0 };
@@ -232,7 +232,7 @@ async function init(){
   if(savedPw){
     if(savedTk) ghToken = savedTk;
     if(cached){
-      try { costs = JSON.parse(cached); PW = savedPw; setAdmin(true); return; } catch(_){}
+      try { costs = ensureCostsFormat(JSON.parse(cached)); PW = savedPw; setAdmin(true); return; } catch(_){}
     }
     try {
       costs = await unlock(savedPw); PW = savedPw;

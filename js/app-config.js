@@ -14,8 +14,6 @@ const STEP = 24;
 const MT_CATS = ['kablo','led','boru','bara'];
 
 /* ==== KDV ==== */
-// Alış fiyatları KDV'siz, satış fiyatları KDV dahil girilir.
-// Net kâr = (Satış / KDV_ORAN) - Alış
 const KDV_ORAN = 1.20;
 const netKar = (satis, alis) => satis / KDV_ORAN - alis;
 const karPct = (kar, alis) => alis > 0 ? (kar / alis * 100) : 0;
@@ -47,6 +45,31 @@ function updateURL(){
 const stokOf = p => p && typeof p.stokAdet === 'number'
   ? p.stokAdet
   : (p && p.stok === 'yok' ? 0 : 1);
+
+/* ==== Costs (alış + iskonto) yardımcıları ==== */
+// costs = { alis: [...], iskonto: [...] } | eski format: dizi
+function ensureCostsFormat(c){
+  if(Array.isArray(c)) return { alis: c.map(v => Number(v) || 0), iskonto: c.map(() => 0) };
+  if(!c || !Array.isArray(c.alis)) return { alis: [], iskonto: [] };
+  return {
+    alis: c.alis.map(v => Number(v) || 0),
+    iskonto: Array.isArray(c.iskonto) ? c.iskonto.map(v => Number(v) || 0) : c.alis.map(() => 0)
+  };
+}
+function rawAlis(id){
+  if(!costs || !costs.alis) return 0;
+  return costs.alis[id] || 0;
+}
+function iskontoOf(id){
+  if(!costs || !costs.iskonto) return 0;
+  return costs.iskonto[id] || 0;
+}
+function netAlis(id){
+  if(!costs || !costs.alis) return 0;
+  const liste = costs.alis[id] || 0;
+  const isk = costs.iskonto[id] || 0;
+  return r2(liste * (1 - isk / 100));
+}
 
 const SORTS = {
   new:['Son eklenen',(a,b)=>b.id-a.id],

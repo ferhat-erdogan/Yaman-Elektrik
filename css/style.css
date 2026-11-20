@@ -445,3 +445,23 @@ footer{text-align:center;color:var(--mut);font-size:12.5px;padding:0 0 100px}
   .card .adm-pct.ghost { display: none; }
   .card .adm-sep { margin: 1px 0; }
 }
+/* ==== İskonto / hesaplanan alış kutusu (modal) ==== */
+.calc-alis{
+  height:44px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border:1px dashed var(--bd);
+  border-radius:11px;
+  background:var(--bg);
+  font-weight:700;
+  color:var(--mut);
+  font-variant-numeric:tabular-nums;
+  transition:.15s;
+}
+.calc-alis.discounted{
+  color:var(--ok);
+  border-style:solid;
+  border-color:rgba(22,163,74,.4);
+  background:rgba(22,163,74,.06);
+}

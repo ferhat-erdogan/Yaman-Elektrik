@@ -21,12 +21,14 @@ function queueSave(item, imageCanvas){
   if(item.id === null || item.id === undefined){
     const id = P.length;
     P.push({ id, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stokAdet });
-    costs.push(item.alis);
+    costs.alis.push(item.liste);
+    costs.iskonto.push(item.isk);
     pending.added.push({ id, ad: item.ad });
   } else {
     const oldId = Number(item.id);
     P[oldId] = { id: oldId, ad: item.ad, satis: item.satis, resim: resimYolu, kat: item.kat, stokAdet };
-    costs[oldId] = item.alis;
+    costs.alis[oldId] = item.liste;
+    costs.iskonto[oldId] = item.isk;
     const aidx = pending.added.findIndex(x => x.id === oldId);
     if(aidx >= 0){
       pending.added[aidx].ad = item.ad;
@@ -48,10 +50,10 @@ function queueDelete(id){
   const silinenAd = urun.ad;
 
   P.splice(id, 1);
-  costs.splice(id, 1);
+  costs.alis.splice(id, 1);
+  costs.iskonto.splice(id, 1);
   P = P.map((p, i) => ({ ...p, id: i }));
 
-  // Silme id'leri kaydırdığı için stok değişiklik takibini sıfırla (products.json zaten tümüyle yazılacak)
   pending.stokChanged.clear();
 
   if(silinenResim.startsWith('img/')){
@@ -204,6 +206,17 @@ function stokFormAdj(d){
   el.value = Math.max(0, (parseInt(el.value, 10) || 0) + d);
 }
 
+/* ==== Alış / İskonto canlı hesap ==== */
+function updateNetAlisCalc(){
+  const l = parseFloat(String($('f_alis').value).replace(',', '.')) || 0;
+  const isk = Math.max(0, Math.min(100, parseFloat(String($('f_iskonto').value).replace(',', '.')) || 0));
+  const net = r2(l * (1 - isk / 100));
+  $('f_net_alis').textContent = TL(net);
+  $('f_net_alis').classList.toggle('discounted', isk > 0);
+}
+$('f_alis').oninput = updateNetAlisCalc;
+$('f_iskonto').oninput = updateNetAlisCalc;
+
 /* ==== Ürün düzenleme ==== */
 let editId = null, delArm = false;
 function edit(id){
@@ -212,9 +225,11 @@ function edit(id){
   const p = (id === null) ? {ad:'',satis:'',resim:'',kat:'',stokAdet:0} : P[id];
   $('etitle').textContent = (id === null) ? 'Yeni ürün' : 'Ürünü düzenle';
   $('f_ad').value = p.ad || '';
-  $('f_alis').value = (id === null) ? '' : (costs ? costs[id] : '');
+  $('f_alis').value = (id === null) ? '' : (rawAlis(id) || '');
+  $('f_iskonto').value = (id === null) ? '' : (iskontoOf(id) || '');
   $('f_satis').value = p.satis || '';
   setStokAdetUI(id === null ? 0 : stokOf(p));
+  updateNetAlisCalc();
   $('f_resim_file').value = '';
 
   const prev = $('f_resim_prev');
@@ -249,10 +264,13 @@ $('f_kat').oninput = drawKch;
 $('newb').onclick = () => edit(null);
 
 $('esave').onclick = async () => {
+  const liste = parseFloat(String($('f_alis').value).replace(',', '.')) || 0;
+  const isk = Math.max(0, Math.min(100, parseFloat(String($('f_iskonto').value).replace(',', '.')) || 0));
   const item = {
     id: editId,
     ad: $('f_ad').value.trim(),
-    alis: parseFloat(String($('f_alis').value).replace(',', '.')) || 0,
+    liste,
+    isk,
     satis: parseFloat(String($('f_satis').value).replace(',', '.')) || 0,
     resim: (editId !== null && P[editId]) ? (P[editId].resim || '') : '',
     kat: $('f_kat').value.trim()

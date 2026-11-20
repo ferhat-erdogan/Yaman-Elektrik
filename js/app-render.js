@@ -56,7 +56,7 @@ function updateCartAmounts(){
   if(tot) tot.querySelector('span:last-child').textContent = TL(total());
   const adm = document.getElementById('cartAdm');
   if(adm && costs){
-    const c = E.reduce((t,[i,n])=>t+costs[i]*n,0);
+    const c = E.reduce((t,[i,n])=>t+netAlis(i)*n,0);
     const setT = (k, v) => { const el = adm.querySelector('[data-cart="'+k+'"]'); if(el) el.textContent = v; };
     setT('alis', TL(c));
     setT('kar', TL(total()-c));
@@ -100,7 +100,7 @@ function drawCart(){
   }).join('') : `<div class="empty" style="padding:50px 0">${BOX}<div>Sepetin boş</div></div>`;
   if(!E.length){ $('cf').innerHTML=''; return; }
   const selE = E.filter(([id])=>isSel(id));
-  const c = costs && selE.reduce((t,[id,n])=>t+costs[id]*n,0);
+  const c = costs && selE.reduce((t,[id,n])=>t+netAlis(id)*n,0);
   let h = `<div class="tot" id="cartTot"><span>Toplam</span><span>${TL(total())}</span></div>`;
   if(costs) h += `<div class="adm" id="cartAdm">
     <div class="adm-row">
@@ -237,7 +237,7 @@ function render(){
   const L = P.filter(p=>(!cat||p.kat===cat)&&p.ad.toLowerCase().includes(q)).sort(SORTS[sort][1]);
   $('cnt').textContent = L.length + ' ürün'; LIST = L;
   $('grid').innerHTML = L.length ? L.slice(0,shown).map(p=>{
-    const n = cart[p.id], c = costs && costs[p.id];
+    const n = cart[p.id], c = costs && netAlis(p.id);
     const isDirty = pending.added.some(x => x.id === p.id) || pending.edited.some(x => x.id === p.id) || pending.stokChanged.has(p.id);
     const oos = stokOf(p) <= 0;
     const stokVal = stokOf(p);
@@ -294,7 +294,7 @@ function pickCat(k){
 function zoom(id){
   const p = P[id]; if(!p || !p.resim) return;
   $('lbi').src = p.resim; $('lbn').textContent = p.ad; $('lbp').textContent = TL(p.satis) + ' / ' + unit(p);
-  const c = costs ? costs[id] : null;
+  const c = costs ? netAlis(id) : null;
   if(c === null){
     $('lba').textContent = '';
   } else {
